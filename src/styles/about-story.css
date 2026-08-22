@@ -1,0 +1,229 @@
+/* =========================================================
+   ABOUT / FILOZOFIE — ELEMENT-LEVEL STORY DIRECTOR
+   Scene 02: editorial reveal → principles → handoff.
+   ========================================================= */
+
+.about {
+  --about-lift: calc((1 - var(--story-focus, 0)) * 28px);
+  --about-energy: var(--sequence-energy, 0);
+  --about-phase: var(--sequence-phase, 0);
+  --about-distance: var(--story-distance, 0);
+  --about-focus: var(--story-focus, 0);
+  position: relative;
+  overflow: clip;
+}
+
+/* Scene camera: the entire section breathes independently from the global story camera. */
+html.motion-ready .about .container[data-motion-role="camera"] {
+  transform:
+    translate3d(
+      calc(var(--about-distance) * -10px),
+      calc(var(--about-distance) * -18px + var(--about-energy) * -5px),
+      0
+    )
+    scale(calc(.992 + var(--about-focus) * .008));
+  transform-origin: 50% 48%;
+  will-change: transform;
+}
+
+/* Chapter marker — tiny, editorial, almost locked to the viewport. */
+html.motion-ready .about .section-label[data-motion-id="about-label"] {
+  transform:
+    translate3d(
+      calc(var(--about-distance) * 14px),
+      calc(var(--about-distance) * 12px - var(--about-energy) * 4px),
+      0
+    )
+    scale(calc(.96 + var(--about-focus) * .04));
+  opacity: calc(.42 + var(--about-focus) * .58);
+  letter-spacing: calc(2px + var(--about-focus) * 1.5px);
+  will-change: transform, opacity;
+}
+
+/* Title is the primary camera subject: lateral separation + restrained scale lock. */
+html.motion-ready .about .section-title[data-motion-id="about-title"] {
+  --title-enter: calc(1 - var(--about-focus));
+  transform:
+    translate3d(
+      calc(var(--about-distance) * -16px + var(--about-energy) * 3px),
+      calc(var(--title-enter) * 22px),
+      0
+    )
+    scale(calc(.975 + var(--about-focus) * .025));
+  opacity: calc(.56 + var(--about-focus) * .44);
+  clip-path: inset(
+    calc(var(--title-enter) * 100%)
+    0
+    0
+    0
+  );
+  will-change: transform, opacity, clip-path;
+}
+
+/* The title's line break becomes a cinematic handoff instead of two identical lines. */
+html.motion-ready .about .section-title::first-line {
+  transform: translateX(calc(var(--about-energy) * -3px));
+}
+
+/* Card field: slight counter motion creates a multi-plane camera. */
+html.motion-ready .about .about-grid {
+  transform:
+    translate3d(
+      0,
+      calc(var(--about-lift) - var(--about-energy) * 5px),
+      0
+    );
+  will-change: transform;
+}
+
+html.motion-ready .about .about-item {
+  --card-focus: var(--about-focus);
+  --card-index: var(--i, 0);
+  --card-wave: calc(sin((var(--card-index) + 1) * .9 + var(--about-phase) * 3.14) * 1px);
+  position: relative;
+  transform:
+    translate3d(
+      calc((var(--about-distance) * (var(--card-index) - 1)) * 4px),
+      calc((1 - var(--card-focus)) * 34px + var(--card-wave)),
+      0
+    )
+    scale(calc(.968 + var(--card-focus) * .032));
+  opacity: calc(.48 + var(--card-focus) * .52);
+  will-change: transform, opacity;
+  contain: paint;
+}
+
+/* Each card owns its own internal shot. */
+html.motion-ready .about .about-item .icon {
+  transform:
+    translate3d(
+      calc(var(--about-distance) * (var(--card-index) - 1) * -5px),
+      calc((1 - var(--card-focus)) * 18px - var(--about-energy) * 3px),
+      0
+    )
+    rotate(calc((1 - var(--card-focus)) * -7deg));
+  scale: calc(.86 + var(--card-focus) * .14);
+  transform-origin: 50% 50%;
+  opacity: calc(.45 + var(--card-focus) * .55);
+  will-change: transform, opacity;
+}
+
+html.motion-ready .about .about-item .icon img {
+  transform: rotate(calc(var(--about-energy) * (var(--card-index) - 1) * 1.2deg));
+  will-change: transform;
+}
+
+html.motion-ready .about .about-item h3 {
+  transform:
+    translate3d(
+      calc(var(--about-distance) * (var(--card-index) - 1) * 2px),
+      calc((1 - var(--card-focus)) * 18px),
+      0
+    )
+    scale(calc(.985 + var(--card-focus) * .015));
+  letter-spacing: calc(-.35px + var(--about-focus) * -.15px);
+  opacity: calc(.58 + var(--card-focus) * .42);
+  will-change: transform, opacity;
+}
+
+html.motion-ready .about .about-item p {
+  transform:
+    translate3d(
+      calc(var(--about-distance) * (1 - var(--card-index)) * 1.5px),
+      calc((1 - var(--card-focus)) * 24px),
+      0
+    );
+  opacity: calc(.34 + var(--card-focus) * .66);
+  will-change: transform, opacity;
+}
+
+/* Rule behaves like a film edit marker: draw on approach, hold, then release. */
+html.motion-ready .about .about-rule {
+  display: block;
+  width: calc(18px + var(--about-focus) * 34px);
+  height: 1px;
+  margin-top: 1.5rem;
+  transform-origin: left center;
+  transform: scaleX(calc(.2 + var(--about-focus) * .8));
+  opacity: calc(.18 + var(--about-focus) * .82);
+  will-change: transform, opacity;
+}
+
+/* Active-card emphasis follows sequence energy rather than using heavy shadows/blur. */
+html.motion-ready .about .about-item:nth-child(1) {
+  transform:
+    translate3d(
+      calc(var(--about-distance) * -4px),
+      calc((1 - var(--about-focus)) * 32px - var(--about-energy) * 2px),
+      0
+    )
+    scale(calc(.97 + var(--about-focus) * .03));
+}
+
+html.motion-ready .about .about-item:nth-child(2) {
+  transform:
+    translate3d(
+      calc(var(--about-distance) * 1px),
+      calc((1 - var(--about-focus)) * 42px - var(--about-energy) * 5px),
+      0
+    )
+    scale(calc(.965 + var(--about-focus) * .035));
+}
+
+html.motion-ready .about .about-item:nth-child(3) {
+  transform:
+    translate3d(
+      calc(var(--about-distance) * 5px),
+      calc((1 - var(--about-focus)) * 52px - var(--about-energy) * 2px),
+      0
+    )
+    scale(calc(.96 + var(--about-focus) * .04));
+}
+
+/* Handoff: the lower edge visually prepares the Services chapter. */
+html.motion-ready .about::before {
+  content: '';
+  position: absolute;
+  left: 8vw;
+  right: 8vw;
+  bottom: 0;
+  height: 1px;
+  background: currentColor;
+  transform-origin: left center;
+  transform: scaleX(calc(.08 + var(--about-focus) * .22 + var(--about-energy) * .7));
+  opacity: calc(.05 + var(--about-energy) * .12);
+  pointer-events: none;
+}
+
+/* The card field becomes more horizontal on wide screens, calmer on mobile. */
+@media (min-width: 969px) {
+  html.motion-ready .about .about-item:nth-child(1) { transition: none; }
+  html.motion-ready .about .about-item:nth-child(2) { transition: none; }
+  html.motion-ready .about .about-item:nth-child(3) { transition: none; }
+}
+
+@media (max-width: 700px) {
+  html.motion-ready .about .container[data-motion-role="camera"] {
+    transform: translate3d(0, calc(var(--about-distance) * -10px), 0);
+  }
+
+  html.motion-ready .about .section-title[data-motion-id="about-title"] {
+    transform: translate3d(0, calc((1 - var(--about-focus)) * 16px), 0) scale(calc(.985 + var(--about-focus) * .015));
+  }
+
+  html.motion-ready .about .about-item,
+  html.motion-ready .about .about-item:nth-child(1),
+  html.motion-ready .about .about-item:nth-child(2),
+  html.motion-ready .about .about-item:nth-child(3) {
+    transform: translate3d(0, calc((1 - var(--about-focus)) * 22px), 0) scale(calc(.985 + var(--about-focus) * .015));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.motion-ready .about * {
+    transform: none !important;
+    clip-path: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+  }
+}
