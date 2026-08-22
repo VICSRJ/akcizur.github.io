@@ -1,5 +1,6 @@
 import { onBeforeUnmount, onMounted } from 'vue'
 import { createMotionDirector } from '../motion/motionDirector.js'
+import { primeRemix, remixSection } from '../motion/remixMotion.js'
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max)
 const smoothstep = (value) => value * value * (3 - 2 * value)
@@ -61,7 +62,8 @@ export function useStoryMotion() {
       section.classList.toggle('story-past', distance <= -0.54)
       section.classList.toggle('story-future', distance >= 0.54)
 
-      directors[index]?.render({
+      const director = directors[index]
+      director?.render({
         progress,
         distance,
         focus: focusSoft,
@@ -72,6 +74,16 @@ export function useStoryMotion() {
         direction,
         chapter,
       })
+
+      remixSection(section, {
+        distance,
+        focus: focusSoft,
+        enter,
+        exit,
+        velocity: motionVelocity,
+        direction,
+        energy: section.style.getPropertyValue('--sequence-energy') || 0.5,
+      }, index)
     })
   }
 
@@ -83,6 +95,7 @@ export function useStoryMotion() {
     sections = [...document.querySelectorAll('section[data-motion-section]')]
     previousY = window.scrollY
     previousTime = performance.now()
+    primeRemix(sections)
 
     if (reducedMotion()) return
 
