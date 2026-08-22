@@ -21,14 +21,12 @@ html.motion-ready [data-motion-section] {
     transition: none;
 }
 
-/* Subtle, human reveal */
 html.motion-ready [data-motion-section] [data-motion="fade"] {
     opacity: 0;
     transform: translate3d(0, 22px, 0);
     filter: blur(10px);
 }
 
-/* Main editorial entrance */
 html.motion-ready [data-motion-section] [data-motion="slide-up"] {
     opacity: 0;
     transform: translate3d(0, 72px, 0);
@@ -47,7 +45,6 @@ html.motion-ready [data-motion-section] [data-motion="slide-right"] {
     filter: blur(14px);
 }
 
-/* Soft scale for visual blocks */
 html.motion-ready [data-motion-section] [data-motion="scale"] {
     opacity: 0;
     transform: translate3d(0, 28px, 0) scale(.96);
@@ -55,7 +52,6 @@ html.motion-ready [data-motion-section] [data-motion="scale"] {
     transform-origin: center center;
 }
 
-/* Cards / tiles feel like they rise out of the page */
 html.motion-ready [data-motion-section] [data-motion="lift"] {
     opacity: 0;
     transform: translate3d(0, 96px, 0) scale(.965);
@@ -63,7 +59,6 @@ html.motion-ready [data-motion-section] [data-motion="lift"] {
     transform-origin: center center;
 }
 
-/* Cinematic clipping for editorial text */
 html.motion-ready [data-motion-section] .section-title,
 html.motion-ready .hero h1 {
     clip-path: inset(0 0 100% 0);
@@ -82,7 +77,6 @@ html.motion-ready [data-motion-section].is-visible [data-motion="lift"] {
     clip-path: inset(0 0 0 0);
 }
 
-/* The reveal should read as one choreographed sequence */
 html.motion-ready [data-motion-section] .section-label,
 html.motion-ready [data-motion-section] .section-title,
 html.motion-ready [data-motion-section] .cta-buttons,
@@ -144,11 +138,78 @@ html.motion-ready footer [data-motion] {
     transition-duration: 900ms;
 }
 
-/* Avoid over-animating hoverable content while entering */
 html.motion-ready [data-motion-section] .about-item,
 html.motion-ready [data-motion-section] .portfolio-item,
 html.motion-ready [data-motion-section] .service-item {
     contain: paint;
+}
+
+/* ============================================
+   STORY FLOW / DYNAMIC PASSAGE
+   ============================================ */
+
+html.motion-ready .story-scene {
+    perspective: 1400px;
+    perspective-origin: 50% 45%;
+}
+
+html.motion-ready .story-scene > section[data-motion-section] {
+    --story-progress: .5;
+    --story-distance: 0;
+    --story-focus: 0;
+    --story-scale: 1;
+    --story-y: 0px;
+    --story-blur: 0px;
+    --story-opacity: 1;
+    transform: translate3d(0, var(--story-y), 0) scale(var(--story-scale));
+    filter: blur(var(--story-blur));
+    opacity: var(--story-opacity);
+    transform-origin: 50% 50%;
+    transition:
+        transform 420ms cubic-bezier(.22, 1, .36, 1),
+        filter 520ms cubic-bezier(.22, 1, .36, 1),
+        opacity 520ms ease;
+    will-change: transform, filter, opacity;
+}
+
+html.motion-ready .story-scene > section.story-active {
+    z-index: 2;
+}
+
+html.motion-ready .story-scene > section.story-past {
+    pointer-events: none;
+}
+
+html.motion-ready .story-scene > section.story-future {
+    z-index: 1;
+}
+
+/* A moving horizon line makes the transition read as a shot change. */
+html.motion-ready .story-scene > section[data-motion-section]::after {
+    content: '';
+    position: absolute;
+    left: 3rem;
+    right: 3rem;
+    top: 50%;
+    height: 1px;
+    background: currentColor;
+    opacity: calc(var(--story-focus) * .08);
+    transform: scaleX(calc(.5 + var(--story-focus) * .5));
+    transform-origin: center;
+    pointer-events: none;
+}
+
+html.motion-ready .story-scene > section.story-active [data-motion-section] {
+    transform: none;
+}
+
+/* Keep the content itself more alive while the section passes the camera. */
+html.motion-ready .story-scene > section.story-active .section-title {
+    letter-spacing: calc(-0.04em - (var(--story-focus) * .006em));
+}
+
+html.motion-ready .story-scene > section.story-active .hero-number {
+    transform: translate3d(calc(var(--story-distance) * -14px), 0, 0);
 }
 
 @media (max-width: 700px) {
@@ -164,12 +225,22 @@ html.motion-ready [data-motion-section] .service-item {
     html.motion-ready [data-motion-section] .portfolio-item {
         transition-delay: calc(var(--i, 0) * 90ms + 80ms);
     }
+
+    html.motion-ready .story-scene > section[data-motion-section] {
+        transform: translate3d(0, var(--story-y), 0) scale(var(--story-scale));
+    }
+
+    html.motion-ready .story-scene > section[data-motion-section]::after {
+        left: 1.5rem;
+        right: 1.5rem;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
     html.motion-ready [data-motion],
     html.motion-ready [data-motion-section] .section-title,
-    html.motion-ready .hero h1 {
+    html.motion-ready .hero h1,
+    html.motion-ready .story-scene > section[data-motion-section] {
         transition: none !important;
         animation: none !important;
         transform: none !important;
