@@ -1,11 +1,10 @@
 /* =========================================================
    CINEMATIC FLUENT STORY SYSTEM — PERFORMANCE PASS
-   Large surfaces stay sharp. Motion uses transform/opacity first.
+   Large surfaces stay sharp. Scroll motion is frame-synced.
    ========================================================= */
 
 .story-scene {
     --scene-ease: cubic-bezier(.16, 1, .3, 1);
-    --scene-ease-soft: cubic-bezier(.22, .61, .36, 1);
     position: relative;
     isolation: isolate;
     overflow: clip;
@@ -17,13 +16,12 @@
     position: relative;
     z-index: 1;
     transform-origin: 50% 50%;
-    transform:
-        translate3d(var(--story-camera-x, 0px), var(--story-camera-y, 0px), 0)
+    transform: translate3d(var(--story-camera-x, 0px), var(--story-camera-y, 0px), 0)
         scale(var(--story-scale, 1));
     opacity: var(--story-opacity, 1);
-    transition:
-        transform 700ms var(--scene-ease),
-        opacity 600ms var(--scene-ease-soft);
+    filter: none !important;
+    transition: none !important;
+    will-change: transform, opacity;
     backface-visibility: hidden;
 }
 
@@ -33,17 +31,14 @@ html.motion-ready .story-scene > section[data-motion-section]::after {
     inset: -1px;
     pointer-events: none;
     z-index: 30;
-    background:
-        linear-gradient(
-            180deg,
-            rgba(0,0,0,calc((1 - var(--story-focus, 1)) * .08)),
-            transparent 22%,
-            transparent 76%,
-            rgba(0,0,0,calc((1 - var(--story-focus, 1)) * .10))
-        );
-    opacity: calc(.16 + var(--story-focus, 1) * .14);
-    mix-blend-mode: multiply;
-    transition: opacity 650ms var(--scene-ease-soft);
+    background: linear-gradient(
+        180deg,
+        rgba(0,0,0,calc((1 - var(--story-focus, 1)) * .035)),
+        transparent 24%,
+        transparent 76%,
+        rgba(0,0,0,calc((1 - var(--story-focus, 1)) * .045))
+    );
+    opacity: .26;
 }
 
 html.motion-ready .story-scene > section[data-motion-section]::before {
@@ -54,36 +49,49 @@ html.motion-ready .story-scene > section[data-motion-section]::before {
     top: 0;
     height: 1px;
     background: currentColor;
-    opacity: calc((1 - var(--story-focus, 0)) * .09 + var(--story-travel, 0) * .035);
-    transform: scaleX(calc(.4 + var(--story-travel, 0) * .6));
+    opacity: calc((1 - var(--story-focus, 0)) * .07 + var(--story-travel, 0) * .025);
+    transform: scaleX(calc(.45 + var(--story-travel, 0) * .55));
     transform-origin: center;
     pointer-events: none;
     z-index: 31;
-    transition: opacity 600ms var(--scene-ease-soft), transform 800ms var(--scene-ease);
+}
+
+/* Scroll-synced layers must not use CSS transition; smoothing belongs to the camera state. */
+html.motion-ready .story-scene > section[data-motion-section] .container,
+html.motion-ready .story-scene > section[data-motion-section] .section-label,
+html.motion-ready .story-scene > section[data-motion-section] .section-title,
+html.motion-ready .story-scene > section[data-motion-section] .about-grid,
+html.motion-ready .story-scene > section[data-motion-section] .services-list,
+html.motion-ready .story-scene > section[data-motion-section] .portfolio-grid,
+html.motion-ready .story-scene > section[data-motion-section] .about-item,
+html.motion-ready .story-scene > section[data-motion-section] .service-item,
+html.motion-ready .story-scene > section[data-motion-section] .portfolio-item,
+html.motion-ready .hero h1,
+html.motion-ready .hero p,
+html.motion-ready .hero-number,
+html.motion-ready .contact .section-title,
+html.motion-ready .contact-email {
+    transition: none !important;
 }
 
 html.motion-ready .story-scene > section[data-motion-section] .container {
     position: relative;
     transform: translate3d(
-        calc(var(--story-distance, 0) * -14px),
-        calc(var(--story-distance, 0) * -22px),
+        calc(var(--story-distance, 0) * -13px),
+        calc(var(--story-distance, 0) * -20px),
         0
     );
-    transition: transform 900ms var(--scene-ease);
-}
-
-html.motion-ready .story-scene > section.story-active .container {
-    transform: translate3d(0, 0, 0);
+    will-change: transform;
 }
 
 html.motion-ready .story-scene > section[data-motion-section] .section-label {
     transform: translate3d(
-        calc(var(--story-distance, 0) * 10px),
-        calc(var(--story-distance, 0) * 14px),
+        calc(var(--story-distance, 0) * 9px),
+        calc(var(--story-distance, 0) * 12px),
         0
     );
-    opacity: calc(.52 + var(--story-focus, 0) * .48);
-    transition: transform 850ms var(--scene-ease), opacity 550ms var(--scene-ease-soft);
+    opacity: calc(.58 + var(--story-focus, 0) * .42);
+    will-change: transform, opacity;
 }
 
 html.motion-ready .story-scene > section[data-motion-section] .section-title,
@@ -91,58 +99,64 @@ html.motion-ready .hero h1,
 html.motion-ready .hero-number,
 html.motion-ready .contact .section-title {
     filter: none !important;
+    will-change: transform, opacity;
 }
 
 html.motion-ready .story-scene > section[data-motion-section] .section-title {
-    transform:
-        translate3d(0, calc(var(--story-distance, 0) * -18px), 0)
-        scale(calc(.985 + var(--story-focus, 0) * .015));
-    opacity: calc(.62 + var(--story-focus, 0) * .38);
-    transition: transform 1000ms var(--scene-ease), opacity 650ms var(--scene-ease-soft);
+    transform: translate3d(0, calc(var(--story-distance, 0) * -16px), 0)
+        scale(calc(.99 + var(--story-focus, 0) * .01));
+    opacity: calc(.68 + var(--story-focus, 0) * .32);
 }
 
 html.motion-ready .story-scene > section[data-motion-section] .about-grid,
 html.motion-ready .story-scene > section[data-motion-section] .services-list,
 html.motion-ready .story-scene > section[data-motion-section] .portfolio-grid {
-    transform: translate3d(0, calc((1 - var(--story-focus, 0)) * 22px), 0);
-    transition: transform 1000ms var(--scene-ease);
+    transform: translate3d(0, calc((1 - var(--story-focus, 0)) * 20px), 0);
+    will-change: transform;
 }
 
 html.motion-ready .story-scene > section[data-motion-section] .about-item,
 html.motion-ready .story-scene > section[data-motion-section] .service-item,
 html.motion-ready .story-scene > section[data-motion-section] .portfolio-item {
-    transform: translate3d(
-        calc(var(--story-distance, 0) * var(--story-index, 1) * 3px),
-        calc((1 - var(--story-focus, 0)) * 34px),
-        0
-    ) scale(calc(.988 + var(--story-focus, 0) * .012));
-    transition: transform 850ms var(--scene-ease), opacity 650ms var(--scene-ease-soft);
     contain: paint;
+    will-change: transform, opacity;
 }
 
+/* Compact cards can use a very small focus blur; never large text/scene surfaces. */
 html.motion-ready .story-scene .about-item[data-motion-blur-safe],
 html.motion-ready .story-scene .service-item[data-motion-blur-safe],
 html.motion-ready .story-scene .portfolio-item[data-motion-blur-safe] {
-    filter: blur(calc((1 - var(--story-focus, 0)) * .8px));
-    transition: transform 850ms var(--scene-ease), opacity 650ms var(--scene-ease-soft), filter 650ms var(--scene-ease-soft);
+    filter: blur(calc((1 - var(--story-focus, 0)) * .45px));
+}
+
+html.motion-ready .story-scene .about-item.motion-no-blur,
+html.motion-ready .story-scene .service-item.motion-no-blur,
+html.motion-ready .story-scene .portfolio-item.motion-no-blur {
+    filter: none !important;
+}
+
+html.motion-ready .story-scene > section[data-motion-section] .about-item {
+    transform: translate3d(
+        calc(var(--story-distance, 0) * var(--story-index, 1) * 2.5px),
+        calc((1 - var(--story-focus, 0)) * 28px),
+        0
+    ) scale(calc(.992 + var(--story-focus, 0) * .008));
 }
 
 html.motion-ready .story-scene > section[data-motion-section] .service-item {
     transform: translate3d(
-        calc((1 - var(--story-focus, 0)) * 18px),
-        calc((1 - var(--story-focus, 0)) * 34px),
+        calc((1 - var(--story-focus, 0)) * 16px),
+        calc((1 - var(--story-focus, 0)) * 26px),
         0
     );
 }
 
 html.motion-ready .story-scene > section[data-motion-section] .portfolio-item {
-    transform:
-        translate3d(
-            calc((1 - var(--story-focus, 0)) * (var(--i, 0) * 3px - 3px)),
-            calc((1 - var(--story-focus, 0)) * 42px),
-            0
-        )
-        scale(calc(.975 + var(--story-focus, 0) * .025));
+    transform: translate3d(
+        calc((1 - var(--story-focus, 0)) * (var(--i, 0) * 2.5px - 2.5px)),
+        calc((1 - var(--story-focus, 0)) * 32px),
+        0
+    ) scale(calc(.982 + var(--story-focus, 0) * .018));
 }
 
 html.motion-ready .hero {
@@ -150,28 +164,25 @@ html.motion-ready .hero {
 }
 
 html.motion-ready .hero h1 {
-    transform:
-        translate3d(calc(var(--story-distance, 0) * -22px), calc(var(--story-distance, 0) * 16px), 0)
-        scale(calc(1 + var(--story-focus, 0) * .014));
-    transition: transform 1050ms var(--scene-ease), opacity 650ms var(--scene-ease-soft);
+    transform: translate3d(
+        calc(var(--story-distance, 0) * -20px),
+        calc(var(--story-distance, 0) * 14px),
+        0
+    ) scale(calc(1 + var(--story-focus, 0) * .012));
 }
 
 html.motion-ready .hero p {
-    transform: translate3d(0, calc(var(--story-distance, 0) * -15px), 0);
-    opacity: calc(.55 + var(--story-focus, 0) * .45);
-    transition: transform 950ms var(--scene-ease), opacity 650ms var(--scene-ease-soft);
+    transform: translate3d(0, calc(var(--story-distance, 0) * -13px), 0);
+    opacity: calc(.64 + var(--story-focus, 0) * .36);
 }
 
 html.motion-ready .hero-number {
-    transform:
-        translate3d(
-            calc(var(--story-distance, 0) * 36px + var(--story-velocity, 0) * var(--story-direction, 1) * 4px),
-            calc(var(--story-distance, 0) * -24px),
-            0
-        )
-        scale(calc(1 + var(--story-focus, 0) * .045));
-    opacity: calc(.68 + var(--story-focus, 0) * .32);
-    transition: transform 1100ms var(--scene-ease), opacity 650ms var(--scene-ease-soft);
+    transform: translate3d(
+        calc(var(--story-distance, 0) * 32px + var(--story-velocity, 0) * var(--story-direction, 1) * 4px),
+        calc(var(--story-distance, 0) * -22px),
+        0
+    ) scale(calc(1 + var(--story-focus, 0) * .04));
+    opacity: calc(.70 + var(--story-focus, 0) * .30);
 }
 
 html.motion-ready .hero::after {
@@ -179,39 +190,28 @@ html.motion-ready .hero::after {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background:
-        radial-gradient(circle at 70% 45%, rgba(255,255,255,.045), transparent 34%),
-        linear-gradient(90deg, transparent 0 47%, rgba(255,255,255,.06) 50%, transparent 53%);
-    opacity: calc(var(--story-focus, 0) * .28);
-    transition: opacity 1000ms var(--scene-ease-soft);
+    background: linear-gradient(90deg, transparent 0 47%, rgba(255,255,255,.045) 50%, transparent 53%);
+    opacity: calc(var(--story-focus, 0) * .25);
 }
 
 html.motion-ready .contact .section-title {
-    transform: translate3d(0, calc((1 - var(--story-focus, 0)) * 28px), 0) scale(calc(.975 + var(--story-focus, 0) * .025));
+    transform: translate3d(0, calc((1 - var(--story-focus, 0)) * 26px), 0)
+        scale(calc(.985 + var(--story-focus, 0) * .015));
 }
 
 html.motion-ready .contact-email {
-    transform: translate3d(0, calc((1 - var(--story-focus, 0)) * 40px), 0);
-    letter-spacing: calc(1px + var(--story-focus, 0) * 1px);
-    transition: transform 1050ms var(--scene-ease), letter-spacing 800ms var(--scene-ease);
+    transform: translate3d(0, calc((1 - var(--story-focus, 0)) * 34px), 0);
 }
 
 html.motion-ready .story-scene > section.story-future { z-index: 2; }
 html.motion-ready .story-scene > section.story-active { z-index: 4; }
 html.motion-ready .story-scene > section.story-past { z-index: 3; }
 
-html.motion-ready .story-scene > section.story-active .section-title,
-html.motion-ready .story-scene > section.story-active .hero-number {
-    text-shadow: 0 calc(var(--story-velocity, 0) * 1px) 16px rgba(0,0,0,.08);
-}
-
 @media (max-width: 700px) {
     .story-scene { perspective: 900px; }
-
     .story-scene > section[data-motion-section] {
-        transform:
-            translate3d(0, calc(var(--story-camera-y, 0px) * .62), 0)
-            scale(calc(.992 + var(--story-focus, 0) * .008));
+        transform: translate3d(0, calc(var(--story-camera-y, 0px) * .60), 0)
+            scale(calc(.993 + var(--story-focus, 0) * .007));
     }
 
     html.motion-ready .story-scene > section[data-motion-section] .container {
@@ -222,17 +222,11 @@ html.motion-ready .story-scene > section.story-active .hero-number {
     html.motion-ready .story-scene > section[data-motion-section] .section-title,
     html.motion-ready .hero h1,
     html.motion-ready .hero p {
-        transform: translate3d(0, calc(var(--story-distance, 0) * 10px), 0);
+        transform: translate3d(0, calc(var(--story-distance, 0) * 9px), 0);
     }
 
     html.motion-ready .hero-number {
-        transform: translate3d(0, calc(var(--story-distance, 0) * -12px), 0) scale(1);
-    }
-
-    html.motion-ready .story-scene > section[data-motion-section] .about-item,
-    html.motion-ready .story-scene > section[data-motion-section] .service-item,
-    html.motion-ready .story-scene > section[data-motion-section] .portfolio-item {
-        transform: translate3d(0, calc((1 - var(--story-focus, 0)) * 18px), 0) scale(1);
+        transform: translate3d(0, calc(var(--story-distance, 0) * -11px), 0);
     }
 
     html.motion-ready .story-scene .about-item[data-motion-blur-safe],
