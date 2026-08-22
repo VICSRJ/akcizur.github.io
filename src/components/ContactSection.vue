@@ -1,5 +1,5 @@
 <template>
-  <section id="kontakt" class="contact" data-motion-section>
+  <section id="kontakt" class="contact" data-motion-section data-motion-sequence="ContactClimax">
     <div class="container" data-motion-preset="FocusDeep">
       <div class="section-label" data-motion="fade" data-motion-preset="FadeMicro">POJĎME BUILDIT</div>
       <h2 class="section-title" data-motion="slide-up" data-motion-preset="CurtainCinematic">MÁTE<br />PROJEKT?</h2>
