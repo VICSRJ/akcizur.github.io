@@ -5,7 +5,7 @@ defineProps({
 </script>
 
 <template>
-  <section id="o-mne" class="about" data-motion-section>
+  <section id="o-mne" class="about" data-motion-section data-motion-sequence="EditorialCurtain">
     <div class="container" data-motion-preset="FocusCinematic">
       <div class="section-label" data-motion="fade" data-motion-preset="FadeSoft">FILOZOFIE</div>
       <h2 class="section-title" data-motion="slide-up" data-motion-preset="ClipCinematic">DESIGN JE O ŘEŠENÍ<br />PROBLÉMŮ PLYNULÉ INTERAKCE</h2>
