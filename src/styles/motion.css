@@ -1,0 +1,59 @@
+/* =========================================================
+   MOTION DIRECTOR OUTPUT
+   The 300 preset recipes resolve into these GPU-friendly variables.
+   ========================================================= */
+
+:root {
+  --motion-ease: cubic-bezier(.16, 1, .3, 1);
+}
+
+html.motion-ready [data-motion-preset] {
+  opacity: var(--motion-opacity, 1);
+  transform:
+    translate3d(var(--motion-x, 0px), var(--motion-y, 0px), var(--motion-z, 0px))
+    scale(var(--motion-scale, 1))
+    rotate(var(--motion-rotate, 0deg))
+    skewX(var(--motion-skew, 0deg));
+  filter: blur(var(--motion-blur, 0px));
+  transition:
+    transform var(--motion-duration, 1.2s) var(--motion-ease),
+    opacity var(--motion-duration, 1.2s) var(--motion-ease),
+    filter var(--motion-duration, 1.2s) var(--motion-ease);
+  will-change: transform, opacity, filter;
+  transform-origin: center center;
+  backface-visibility: hidden;
+}
+
+html.motion-ready [data-motion-preset][data-motion-preset*="Clip"],
+html.motion-ready [data-motion-preset][data-motion-preset*="Mask"],
+html.motion-ready [data-motion-preset][data-motion-preset*="Curtain"] {
+  clip-path: inset(calc((1 - var(--story-focus, 1)) * 100%) 0 0 0);
+  transition: clip-path var(--motion-duration, 1.2s) var(--motion-ease),
+              transform var(--motion-duration, 1.2s) var(--motion-ease),
+              opacity var(--motion-duration, 1.2s) var(--motion-ease);
+}
+
+html.motion-ready .story-scene [data-motion-preset] {
+  perspective: 1400px;
+}
+
+html.motion-ready .story-scene [data-motion-preset]:hover {
+  --motion-hover-scale: 1.012;
+}
+
+@media (max-width: 700px) {
+  html.motion-ready [data-motion-preset] {
+    --motion-blur: 0px;
+    transition-duration: calc(var(--motion-duration, 1.2s) * .72);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.motion-ready [data-motion-preset] {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    clip-path: none !important;
+    transition: none !important;
+  }
+}
