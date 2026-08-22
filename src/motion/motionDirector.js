@@ -1,6 +1,6 @@
 import { getMotionPreset } from './motionPresets.js'
 import { getMotionSequence } from './motionSequences.js'
-import { solveDynamicMotion, primeDynamicState } from './dynamicSolver.js'
+import { solveDynamicMotion, primeDynamicState, RELATIONS } from './dynamicSolver.js'
 
 const clamp = (value, min = 0, max = 1) => Math.min(Math.max(value, min), max)
 const smooth = (value, power = 1.35) => Math.pow(clamp(value), power)
@@ -115,6 +115,7 @@ export const createMotionDirector = ({ root = document } = {}) => {
   const nodes = stampMotionPreset(root)
   const smoothVelocity = { value: 0 }
   const sequence = getMotionSequence(root instanceof Element ? root.dataset.motionSequence || 'OpeningFilm' : 'OpeningFilm')
+  const byId = new Map(nodes.filter((node) => node.dataset.motionId).map((node) => [node.dataset.motionId, node]))
 
   const render = (state) => {
     smoothVelocity.value += ((state.velocity || 0) - smoothVelocity.value) * .14
@@ -126,20 +127,48 @@ export const createMotionDirector = ({ root = document } = {}) => {
     root.style.setProperty('--sequence-beat', String(sequenceState.beatIndex))
     root.style.setProperty('--sequence-overlap', String(sequenceState.overlap))
 
+    const dynamics = new Map()
     nodes.forEach((node) => {
-      const dynamic = solveDynamicMotion(node, {
+      dynamics.set(node.dataset.motionId || '', solveDynamicMotion(node, {
         ...next,
         sequenceEnergy: sequenceState.energy,
         sequencePhase: sequenceState.phase,
         sequenceBeat: sequenceState.beatIndex,
+      }))
+    })
+
+    Object.entries(RELATIONS).forEach(([targetId, relation]) => {
+      const target = byId.get(targetId)
+      const targetState = dynamics.get(targetId)
+      if (!target || !targetState) return
+      let x = 0
+      let y = 0
+      let z = 0
+      let rz = 0
+      ;(relation.follow || []).forEach(([sourceId, strength]) => {
+        const source = dynamics.get(sourceId)
+        if (!source) return
+        x += source.x * strength
+        y += source.y * strength
+        z += source.z * strength
+        rz += source.rz * strength
       })
+      if (relation.counter) x -= next.velocity * next.direction * relation.counter * 6
+      target.style.setProperty('--motion-relation-x', `${x.toFixed(2)}px`)
+      target.style.setProperty('--motion-relation-y', `${y.toFixed(2)}px`)
+      target.style.setProperty('--motion-relation-z', `${z.toFixed(2)}px`)
+      target.style.setProperty('--motion-relation-rotate', `${rz.toFixed(3)}deg`)
+      dynamics.set(targetId, { ...targetState, x: targetState.x + x, y: targetState.y + y, z: targetState.z + z, rz: targetState.rz + rz })
+    })
+
+    nodes.forEach((node) => {
       applyMotionPreset(node, node.dataset.motionPreset, {
         ...next,
         sequenceEnergy: sequenceState.energy,
         sequencePhase: sequenceState.phase,
-      }, dynamic)
+      }, dynamics.get(node.dataset.motionId || ''))
     })
   }
 
-  return { render, nodes, presetCount: nodes.length, sequence, sequenceName: sequence.name }
+  return { render, nodes, presetCount: nodes.length, sequence, sequenceName: sequence.name, relationCount: Object.keys(RELATIONS).length }
 }
