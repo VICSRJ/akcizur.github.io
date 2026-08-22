@@ -1,6 +1,7 @@
 /* =========================================================
    MOTION DIRECTOR OUTPUT — PERFORMANCE
-   Transform + opacity are the default. Blur is opt-in only.
+   Scroll-driven motion is frame-synchronous: no transition lag.
+   Blur stays opt-in and only on compact elements.
    ========================================================= */
 
 :root {
@@ -14,28 +15,26 @@ html.motion-ready [data-motion-preset] {
     scale(var(--motion-scale, 1))
     rotate(var(--motion-rotate, 0deg))
     skewX(var(--motion-skew, 0deg)) !important;
-  transition:
-    transform var(--motion-duration, 1.2s) var(--motion-ease),
-    opacity var(--motion-duration, 1.2s) var(--motion-ease) !important;
+  transition: none !important;
   transform-origin: center center;
   backface-visibility: hidden;
 }
 
-/* Blur is reserved for compact surfaces explicitly marked safe by the director. */
+/* Blur is reserved for compact surfaces explicitly marked safe. */
 html.motion-ready [data-motion-preset][data-motion-blur-safe] {
   filter: blur(var(--motion-blur, 0px));
-  transition:
-    transform var(--motion-duration, 1.2s) var(--motion-ease),
-    opacity var(--motion-duration, 1.2s) var(--motion-ease),
-    filter var(--motion-duration, 1.2s) var(--motion-ease) !important;
 }
 
-/* Never blur large typography or scene-level surfaces. */
+/* Large typography, media, and scene shells never receive filter blur. */
 html.motion-ready .story-scene [data-motion-preset].motion-no-blur,
 html.motion-ready .story-scene .section-title,
 html.motion-ready .story-scene .hero h1,
 html.motion-ready .story-scene .hero-number,
-html.motion-ready .story-scene > section[data-motion-section] {
+html.motion-ready .story-scene .hero p,
+html.motion-ready .story-scene .contact .section-title,
+html.motion-ready .story-scene > section[data-motion-section],
+html.motion-ready .story-scene [data-motion-preset] img,
+html.motion-ready .story-scene [data-motion-preset] video {
   filter: none !important;
 }
 
@@ -43,10 +42,6 @@ html.motion-ready [data-motion-preset][data-motion-preset*="Clip"],
 html.motion-ready [data-motion-preset][data-motion-preset*="Mask"],
 html.motion-ready [data-motion-preset][data-motion-preset*="Curtain"] {
   clip-path: inset(calc((1 - var(--story-focus, 1)) * 100%) 0 0 0);
-  transition:
-    clip-path var(--motion-duration, 1.2s) var(--motion-ease),
-    transform var(--motion-duration, 1.2s) var(--motion-ease),
-    opacity var(--motion-duration, 1.2s) var(--motion-ease) !important;
 }
 
 html.motion-ready .story-scene [data-motion-preset] {
@@ -54,10 +49,6 @@ html.motion-ready .story-scene [data-motion-preset] {
 }
 
 @media (max-width: 700px) {
-  html.motion-ready [data-motion-preset] {
-    transition-duration: calc(var(--motion-duration, 1.2s) * .72) !important;
-  }
-
   html.motion-ready [data-motion-preset][data-motion-blur-safe] {
     filter: none;
   }
