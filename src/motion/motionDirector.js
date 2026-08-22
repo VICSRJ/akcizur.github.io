@@ -51,31 +51,27 @@ const resolveTransform = (preset, progress, velocity, direction) => {
   const v = variantMap[preset.variant] || variantMap.cinematic
   const f = familyMap[preset.family] || familyMap.fade
   const phase = smooth(progress)
-  const travel = (1 - Math.abs(progress * 2 - 1))
+  const travel = 1 - Math.abs(progress * 2 - 1)
   const speed = Math.min(Math.abs(velocity), 1)
   const directionSign = direction || 1
 
-  const x = f.x * v.distance * (1 - phase) * 80 + directionSign * speed * f.x * 18
-  const y = f.y * v.distance * (1 - phase) * 90 - directionSign * speed * f.y * 10
-  const z = f.z * v.distance * (1 - phase) * 90
-  const scale = 1 - (1 - phase) * (1 - v.scale)
-  const rotate = f.rotate * (1 - phase) * 7 + directionSign * speed * f.rotate * 1.8
-  const blur = (1 - phase) * v.blur * 10 + speed * v.blur * 2.5
-  const skew = f.x * directionSign * speed * (preset.family === 'skew' ? 5 : 1.5)
-  const opacity = clamp(0.58 + phase * 0.42 + travel * 0.06)
-
-  return { x, y, z, scale, rotate, blur, skew, opacity }
+  return {
+    x: f.x * v.distance * (1 - phase) * 80 + directionSign * speed * f.x * 18,
+    y: f.y * v.distance * (1 - phase) * 90 - directionSign * speed * f.y * 10,
+    z: f.z * v.distance * (1 - phase) * 90,
+    scale: 1 - (1 - phase) * (1 - v.scale),
+    rotate: f.rotate * (1 - phase) * 7 + directionSign * speed * f.rotate * 1.8,
+    blur: (1 - phase) * v.blur * 10 + speed * v.blur * 2.5,
+    skew: f.x * directionSign * speed * (preset.family === 'skew' ? 5 : 1.5),
+    opacity: clamp(0.58 + phase * 0.42 + travel * 0.06),
+  }
 }
 
 export const applyMotionPreset = (element, presetName, state) => {
   if (!element) return
   const preset = typeof presetName === 'string' ? getMotionPreset(presetName) : presetName
-  const values = resolveTransform(
-    preset,
-    state.progress ?? 0.5,
-    state.velocity ?? 0,
-    state.direction ?? 1,
-  )
+  const values = resolveTransform(preset, state.progress ?? 0.5, state.velocity ?? 0, state.direction ?? 1)
+  const duration = variantMap[preset.variant]?.duration ?? 1.2
 
   element.style.setProperty('--motion-x', `${values.x.toFixed(2)}px`)
   element.style.setProperty('--motion-y', `${values.y.toFixed(2)}px`)
@@ -85,20 +81,30 @@ export const applyMotionPreset = (element, presetName, state) => {
   element.style.setProperty('--motion-blur', `${values.blur.toFixed(2)}px`)
   element.style.setProperty('--motion-skew', `${values.skew.toFixed(3)}deg`)
   element.style.setProperty('--motion-opacity', values.opacity.toFixed(4))
-  element.style.setProperty('--motion-duration', `${(variantMap[preset.variant]?.duration ?? 1.2)}s`)
+  element.style.setProperty('--motion-duration', `${duration}s`)
 }
 
+const selector = [
+  '[data-motion-preset]', '[data-motion]', '.section-label', '.section-title', '.cta-buttons',
+  '.contact-email', '.about-item', '.service-item', '.portfolio-item', '.hero h1', '.hero p',
+  '.hero-number', 'footer [data-motion]',
+].join(',')
+
+const fallbackPresets = [
+  'FadeCinematic', 'RiseFluid', 'ParallaxDeep', 'DepthCinematic', 'GlideSmooth',
+  'RevealSlow', 'TrackWide', 'ZoomCinematic', 'FocusSoft', 'FloatFluid',
+]
+
 export const stampMotionPreset = (root = document) => {
-  const nodes = root.querySelectorAll('[data-motion-preset]')
+  const nodes = [...root.querySelectorAll(selector)]
   nodes.forEach((node, index) => {
-    const fallback = ['FadeCinematic', 'RiseFluid', 'ParallaxDeep', 'DepthCinematic', 'GlideSmooth'][index % 5]
-    if (!node.dataset.motionPreset) node.dataset.motionPreset = fallback
+    if (!node.dataset.motionPreset) node.dataset.motionPreset = fallbackPresets[index % fallbackPresets.length]
   })
   return nodes
 }
 
 export const createMotionDirector = ({ root = document } = {}) => {
-  const nodes = [...stampMotionPreset(root)]
+  const nodes = stampMotionPreset(root)
   const smoothVelocity = { value: 0 }
 
   const render = (state) => {
@@ -107,9 +113,5 @@ export const createMotionDirector = ({ root = document } = {}) => {
     nodes.forEach((node) => applyMotionPreset(node, node.dataset.motionPreset, next))
   }
 
-  return {
-    render,
-    nodes,
-    presetCount: nodes.length,
-  }
+  return { render, nodes, presetCount: nodes.length }
 }
