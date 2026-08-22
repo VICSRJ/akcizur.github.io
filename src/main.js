@@ -12,6 +12,7 @@ import './styles/art-direction-refresh.css'
 import './styles/text-depth-shadow.css'
 import './styles/text-depth-shadow-v2.css'
 import './styles/scene-direction-v2.css'
+import './styles/remix-motion.css'
 import './styles/mobile.css'
 
 createApp(App).mount('#app')
