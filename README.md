@@ -38,25 +38,26 @@ scene progress / focus / enter / exit
    ↓
 Motion Director
    ↓
-300 motion presets
+900 motion presets
    ↓
-parallax / depth / blur / scale / rotate / opacity
+parallax / depth / blur / scale / rotate / skew / kinetic timing
    ↓
 CSS variables + GPU transforms
 ```
 
-### 300 presetů
+### 900 presetů
 
-`src/motion/motionPresets.js` generuje přesně 300 parametrických recipes:
+`src/motion/motionPresets.js` generuje přesně **900 parametrických recipes**:
 
-- 25 motion families
+- 75 motion families
 - 12 variant pro každou family
-- 300 unikátních presetů
-- společná matematika a jednotný runtime
+- 900 unikátních presetů
+- jednotný runtime resolver
+- deterministic seed pro jemné mikroodchylky
 
-Příklady:
+Nové families zahrnují mimo jiné:
 
-`FadeCinematic` · `RevealCinematic` · `ParallaxDeep` · `DepthCinematic` · `TrackWide` · `CurtainCinematic`
+`Whip` · `Sweep` · `Shutter` · `Fold` · `Orbit` · `Wave` · `Ripple` · `Spring` · `Magnetic` · `RackFocus` · `Dolly` · `Crane` · `Glow` · `Cascade` · `Domino` · `Fan` · `Scatter` · `SplitText`
 
 ### Scroll sync
 
@@ -70,10 +71,7 @@ Příklady:
 - direction
 - camera X/Y
 - scale
-- blur
 - opacity
-
-Každá scéna má vlastní `Motion Director`, takže se její timeline navzájem nepřepisují.
 
 ### Motion Director
 
@@ -90,6 +88,10 @@ Každá scéna má vlastní `Motion Director`, takže se její timeline navzáje
 --motion-opacity
 --motion-duration
 ```
+
+### Performance policy
+
+Velké plochy a velká typografie zůstávají ostré. Blur je opt-in pouze pro malé bezpečné surfaces; hlavní motion path používá transform + opacity. Mobil blur vypíná úplně.
 
 ### Scene choreography
 
@@ -108,7 +110,7 @@ Každá scéna má vlastní `Motion Director`, takže se její timeline navzáje
 - `src/components` — sekce webu
 - `src/content` — obsah a data
 - `src/composables` — smooth scroll + scene orchestration
-- `src/motion/motionPresets.js` — 300 presetů
+- `src/motion/motionPresets.js` — 900 presetů
 - `src/motion/motionDirector.js` — runtime resolver
 - `src/styles/animations.css` — základní reveal systém
 - `src/styles/story.css` — scene / camera choreography
