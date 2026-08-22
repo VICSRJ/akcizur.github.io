@@ -5,7 +5,7 @@ defineProps({
 </script>
 
 <template>
-  <section id="portfolio" class="portfolio" data-motion-section>
+  <section id="portfolio" class="portfolio" data-motion-section data-motion-sequence="PortfolioSweep">
     <div class="container" data-motion-preset="ParallaxCinematic">
       <div class="section-label" data-motion="fade" data-motion-preset="FadeSoft">VYBRANÉ PROJEKTY</div>
       <h2 class="section-title" data-motion="slide-up" data-motion-preset="ZoomCinematic">PORTFOLIO</h2>
