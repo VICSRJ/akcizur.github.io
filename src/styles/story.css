@@ -56,7 +56,7 @@ html.motion-ready .story-scene > section[data-motion-section]::before {
     z-index: 31;
 }
 
-/* Scroll-synced layers must not use CSS transition; smoothing belongs to the camera state. */
+/* Scroll-synced layers must not use CSS transitions; smoothing belongs to the camera state. */
 html.motion-ready .story-scene > section[data-motion-section] .container,
 html.motion-ready .story-scene > section[data-motion-section] .section-label,
 html.motion-ready .story-scene > section[data-motion-section] .section-title,
@@ -119,10 +119,9 @@ html.motion-ready .story-scene > section[data-motion-section] .about-item,
 html.motion-ready .story-scene > section[data-motion-section] .service-item,
 html.motion-ready .story-scene > section[data-motion-section] .portfolio-item {
     contain: paint;
-    will-change: transform, opacity;
 }
 
-/* Compact cards can use a very small focus blur; never large text/scene surfaces. */
+/* Compact cards can use a very small focus blur; large surfaces never do. */
 html.motion-ready .story-scene .about-item[data-motion-blur-safe],
 html.motion-ready .story-scene .service-item[data-motion-blur-safe],
 html.motion-ready .story-scene .portfolio-item[data-motion-blur-safe] {
