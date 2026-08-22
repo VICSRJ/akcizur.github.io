@@ -10,7 +10,6 @@ import ContactSection from './components/ContactSection.vue'
 import SiteFooter from './components/SiteFooter.vue'
 
 import { navLinks, aboutItems, services, portfolioItems } from './content/siteContent.js'
-import { useSmoothScroll } from './composables/useSmoothScroll.js'
 import { useRemixMotion } from './composables/useRemixMotion.js'
 
 const isMenuOpen = ref(false)
@@ -27,7 +26,6 @@ watch(isMenuOpen, (value) => {
   document.body.classList.toggle('menu-open', value)
 })
 
-useSmoothScroll()
 useRemixMotion()
 
 onMounted(() => {
