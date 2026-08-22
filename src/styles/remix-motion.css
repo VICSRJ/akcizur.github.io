@@ -1,0 +1,183 @@
+/* =========================================================
+   REMIX MOTION — SINGLE RENDER SURFACE
+   Scene + element choreography, driven by useRemixMotion.
+   ========================================================= */
+
+html.remix-motion.motion-ready [data-motion-section] {
+  --remix-scene-x: 0px;
+  --remix-scene-y: 0px;
+  --remix-scene-z: 0px;
+  --remix-scene-rotate: 0deg;
+  --remix-scene-scale: 1;
+  --remix-scene-opacity: 1;
+  transform:
+    translate3d(var(--remix-scene-x), var(--remix-scene-y), var(--remix-scene-z))
+    rotate(var(--remix-scene-rotate))
+    scale(var(--remix-scene-scale)) !important;
+  opacity: var(--remix-scene-opacity) !important;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  filter: none !important;
+  transition: none !important;
+  will-change: transform, opacity;
+}
+
+html.remix-motion.motion-ready [data-motion-section] [data-motion-preset],
+html.remix-motion.motion-ready [data-motion-section] [data-motion],
+html.remix-motion.motion-ready [data-motion-section] [data-motion-role] {
+  --remix-x: 0px;
+  --remix-y: 0px;
+  --remix-z: 0px;
+  --remix-rotate: 0deg;
+  --remix-scale: 1;
+  --remix-opacity: 1;
+  transform:
+    translate3d(var(--remix-x), var(--remix-y), var(--remix-z))
+    rotate(var(--remix-rotate))
+    scale(var(--remix-scale)) !important;
+  opacity: var(--remix-opacity) !important;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  filter: none !important;
+  transition: none !important;
+  will-change: transform, opacity;
+}
+
+html.remix-motion.motion-ready [data-motion-role="title"],
+html.remix-motion.motion-ready [data-motion-role="heading"],
+html.remix-motion.motion-ready [data-motion-role="index"],
+html.remix-motion.motion-ready [data-motion-role="depth"],
+html.remix-motion.motion-ready .section-title,
+html.remix-motion.motion-ready .hero h1,
+html.remix-motion.motion-ready .hero-number {
+  text-shadow:
+    calc(var(--remix-shadow-x, 0px) * .30)
+    calc(var(--remix-shadow-y, 0px) * .30)
+    0 rgba(0,0,0,.24),
+    calc(var(--remix-shadow-x, 0px) * .70)
+    calc(var(--remix-shadow-y, 0px) * .70)
+    calc(var(--remix-shadow-blur, 0px) * .42)
+    rgba(0,0,0,calc(var(--remix-shadow-alpha, 0) * .82)),
+    var(--remix-shadow-x, 0px)
+    var(--remix-shadow-y, 0px)
+    var(--remix-shadow-blur, 0px)
+    rgba(0,0,0,var(--remix-shadow-alpha, 0));
+  text-rendering: geometricPrecision;
+}
+
+html.remix-motion.motion-ready .services [data-motion-role="title"],
+html.remix-motion.motion-ready .services [data-motion-role="heading"],
+html.remix-motion.motion-ready .contact .section-title,
+html.remix-motion.motion-ready .hero h1,
+html.remix-motion.motion-ready .hero-number {
+  text-shadow:
+    -1px -1px 0 rgba(255,255,255,.11),
+    calc(var(--remix-shadow-x, 0px) * .28)
+    calc(var(--remix-shadow-y, 0px) * .28)
+    0 rgba(0,0,0,.28),
+    calc(var(--remix-shadow-x, 0px) * .75)
+    calc(var(--remix-shadow-y, 0px) * .75)
+    calc(var(--remix-shadow-blur, 0px) * .55)
+    rgba(0,0,0,calc(var(--remix-shadow-alpha, 0) * 1.15)),
+    calc(var(--remix-shadow-x, 0px) * 1.35)
+    calc(var(--remix-shadow-y, 0px) * 1.45)
+    calc(var(--remix-shadow-blur, 0px) * 1.8)
+    rgba(0,0,0,calc(var(--remix-shadow-alpha, 0) * .30));
+}
+
+html.remix-motion.motion-ready .about [data-motion-role="title"],
+html.remix-motion.motion-ready .about [data-motion-role="heading"],
+html.remix-motion.motion-ready .portfolio [data-motion-role="title"],
+html.remix-motion.motion-ready .portfolio [data-motion-role="heading"] {
+  text-shadow:
+    -1px -1px 0 rgba(255,255,255,.88),
+    calc(var(--remix-shadow-x, 0px) * .18)
+    calc(var(--remix-shadow-y, 0px) * .18)
+    0 rgba(0,0,0,.16),
+    calc(var(--remix-shadow-x, 0px) * .42)
+    calc(var(--remix-shadow-y, 0px) * .42)
+    0 rgba(0,0,0,.22),
+    calc(var(--remix-shadow-x, 0px) * .76)
+    calc(var(--remix-shadow-y, 0px) * .76)
+    calc(var(--remix-shadow-blur, 0px) * .48)
+    rgba(0,0,0,calc(var(--remix-shadow-alpha, 0) * .92)),
+    calc(var(--remix-shadow-x, 0px) * 1.35)
+    calc(var(--remix-shadow-y, 0px) * 1.45)
+    calc(var(--remix-shadow-blur, 0px) * 1.95)
+    rgba(0,0,0,calc(var(--remix-shadow-alpha, 0) * .30));
+}
+
+html.remix-motion.motion-ready [data-motion-role="title"],
+html.remix-motion.motion-ready [data-motion-role="heading"] {
+  transform-origin: 0 50%;
+}
+
+html.remix-motion.motion-ready [data-motion-role="icon"] {
+  transform-origin: 50% 50%;
+}
+
+html.remix-motion.motion-ready [data-motion-role="rule"] {
+  transform-origin: left center;
+}
+
+html.remix-motion.motion-ready [data-remix-scene="OpeningFilm"] { transform-origin: 50% 55%; }
+html.remix-motion.motion-ready [data-remix-scene="EditorialCurtain"] { transform-origin: 88% 50%; }
+html.remix-motion.motion-ready [data-remix-scene="ServicesRhythm"] { transform-origin: 12% 50%; }
+html.remix-motion.motion-ready [data-remix-scene="PortfolioSweep"] { transform-origin: 52% 86%; }
+html.remix-motion.motion-ready [data-remix-scene="ContactClimax"] { transform-origin: 50% 15%; }
+
+html.remix-motion.motion-ready [data-motion-section],
+html.remix-motion.motion-ready [data-motion-section] .container,
+html.remix-motion.motion-ready [data-motion-section] .section-title,
+html.remix-motion.motion-ready [data-motion-section] .hero h1,
+html.remix-motion.motion-ready [data-motion-section] .hero-number {
+  filter: none !important;
+}
+
+@media (max-width:700px) {
+  html.remix-motion.motion-ready [data-motion-section] {
+    transform:
+      translate3d(calc(var(--remix-scene-x) * .55), calc(var(--remix-scene-y) * .65), 0)
+      rotate(calc(var(--remix-scene-rotate) * .45))
+      scale(calc(.995 + (var(--remix-scene-scale) - 1) * .55)) !important;
+  }
+
+  html.remix-motion.motion-ready [data-motion-section] [data-motion-preset],
+  html.remix-motion.motion-ready [data-motion-section] [data-motion],
+  html.remix-motion.motion-ready [data-motion-section] [data-motion-role] {
+    transform:
+      translate3d(calc(var(--remix-x) * .60), calc(var(--remix-y) * .64), calc(var(--remix-z) * .45))
+      rotate(calc(var(--remix-rotate) * .50))
+      scale(calc(.998 + (var(--remix-scale) - 1) * .55)) !important;
+  }
+
+  html.remix-motion.motion-ready [data-motion-role="title"],
+  html.remix-motion.motion-ready [data-motion-role="heading"],
+  html.remix-motion.motion-ready [data-motion-role="index"],
+  html.remix-motion.motion-ready [data-motion-role="depth"],
+  html.remix-motion.motion-ready .section-title,
+  html.remix-motion.motion-ready .hero h1,
+  html.remix-motion.motion-ready .hero-number {
+    text-shadow:
+      calc(var(--remix-shadow-x, 0px) * .55)
+      calc(var(--remix-shadow-y, 0px) * .55)
+      0 rgba(0,0,0,.18),
+      var(--remix-shadow-x, 0px)
+      var(--remix-shadow-y, 0px)
+      calc(var(--remix-shadow-blur, 0px) * .56)
+      rgba(0,0,0,calc(var(--remix-shadow-alpha, 0) * .76));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.remix-motion.motion-ready [data-motion-section],
+  html.remix-motion.motion-ready [data-motion-section] [data-motion-preset],
+  html.remix-motion.motion-ready [data-motion-section] [data-motion],
+  html.remix-motion.motion-ready [data-motion-section] [data-motion-role] {
+    transform: none !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+    filter: none !important;
+    transition: none !important;
+  }
+}
