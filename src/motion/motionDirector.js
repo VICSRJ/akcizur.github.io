@@ -5,46 +5,22 @@ const clamp = gsap.utils.clamp(0, 1)
 const smooth = (value, power = 1.35) => Math.pow(clamp(value), power)
 
 const variantMap = {
-  soft: { distance: 0.65, blur: 0.35, scale: 0.985, duration: 1.35 },
-  strong: { distance: 1.35, blur: 1.0, scale: 0.965, duration: 0.95 },
-  slow: { distance: 1.05, blur: 0.6, scale: 0.98, duration: 1.65 },
-  fast: { distance: 0.85, blur: 0.5, scale: 0.975, duration: 0.65 },
-  elastic: { distance: 1.2, blur: 0.45, scale: 0.97, duration: 1.1 },
-  smooth: { distance: 0.95, blur: 0.45, scale: 0.98, duration: 1.25 },
-  sharp: { distance: 0.8, blur: 0.25, scale: 0.978, duration: 0.8 },
-  cinematic: { distance: 1.1, blur: 0.75, scale: 0.97, duration: 1.45 },
-  fluid: { distance: 0.9, blur: 0.35, scale: 0.982, duration: 1.15 },
-  deep: { distance: 1.5, blur: 1.15, scale: 0.95, duration: 1.55 },
-  wide: { distance: 1.25, blur: 0.55, scale: 0.97, duration: 1.2 },
-  micro: { distance: 0.35, blur: 0.15, scale: 0.992, duration: 0.55 },
+  soft: { distance: 0.65, blur: 0.25, scale: 0.985, duration: 1.35 }, strong: { distance: 1.35, blur: 0.55, scale: 0.965, duration: 0.95 },
+  slow: { distance: 1.05, blur: 0.3, scale: 0.98, duration: 1.65 }, fast: { distance: 0.85, blur: 0.28, scale: 0.975, duration: 0.65 },
+  elastic: { distance: 1.2, blur: 0.35, scale: 0.97, duration: 1.1 }, smooth: { distance: 0.95, blur: 0.25, scale: 0.98, duration: 1.25 },
+  sharp: { distance: 0.8, blur: 0.15, scale: 0.978, duration: 0.8 }, cinematic: { distance: 1.1, blur: 0.4, scale: 0.97, duration: 1.45 },
+  fluid: { distance: 0.9, blur: 0.22, scale: 0.982, duration: 1.15 }, deep: { distance: 1.5, blur: 0.5, scale: 0.95, duration: 1.55 },
+  wide: { distance: 1.25, blur: 0.3, scale: 0.97, duration: 1.2 }, micro: { distance: 0.35, blur: 0.08, scale: 0.992, duration: 0.55 },
 }
 
 const familyMap = {
-  fade: { x: 0, y: 0, z: 0, rotate: 0 },
-  rise: { x: 0, y: 1, z: 0, rotate: -0.3 },
-  drop: { x: 0, y: -1, z: 0, rotate: 0.3 },
-  slideleft: { x: 1, y: 0, z: 0, rotate: -0.5 },
-  slideright: { x: -1, y: 0, z: 0, rotate: 0.5 },
-  scale: { x: 0, y: 0, z: 0, rotate: 0 },
-  blur: { x: 0, y: 0.15, z: -0.2, rotate: 0 },
-  focus: { x: 0, y: 0, z: 0.35, rotate: 0 },
-  reveal: { x: 0, y: 0.8, z: 0, rotate: 0 },
-  clip: { x: 0, y: 0.9, z: 0, rotate: 0 },
-  mask: { x: 0.5, y: 0.25, z: 0, rotate: 0 },
-  push: { x: 0, y: 0, z: -1, rotate: 0 },
-  pull: { x: 0, y: 0, z: 1, rotate: 0 },
-  drift: { x: 0.4, y: 0.45, z: 0, rotate: 0.25 },
-  float: { x: 0.15, y: 0.35, z: 0.1, rotate: 0.15 },
-  parallax: { x: 0.8, y: 0.8, z: 0.7, rotate: 0 },
-  depth: { x: 0, y: 0, z: 1, rotate: 0 },
-  rotate: { x: 0.2, y: 0.2, z: 0, rotate: 1 },
-  skew: { x: 0.25, y: 0, z: 0, rotate: 0.8 },
-  split: { x: 1, y: 0, z: 0, rotate: 0 },
-  curtain: { x: 0, y: 1, z: 0, rotate: 0 },
-  glide: { x: 0.5, y: 0.25, z: 0, rotate: 0 },
-  track: { x: 1, y: 0.15, z: 0.25, rotate: 0 },
-  zoom: { x: 0, y: 0, z: 1, rotate: 0 },
-  pulse: { x: 0, y: 0, z: 0, rotate: 0 },
+  fade:{x:0,y:0,z:0,rotate:0}, rise:{x:0,y:1,z:0,rotate:-0.3}, drop:{x:0,y:-1,z:0,rotate:0.3},
+  slideleft:{x:1,y:0,z:0,rotate:-0.5}, slideright:{x:-1,y:0,z:0,rotate:0.5}, scale:{x:0,y:0,z:0,rotate:0},
+  blur:{x:0,y:0.15,z:-0.2,rotate:0}, focus:{x:0,y:0,z:0.35,rotate:0}, reveal:{x:0,y:0.8,z:0,rotate:0}, clip:{x:0,y:0.9,z:0,rotate:0},
+  mask:{x:0.5,y:0.25,z:0,rotate:0}, push:{x:0,y:0,z:-1,rotate:0}, pull:{x:0,y:0,z:1,rotate:0}, drift:{x:0.4,y:0.45,z:0,rotate:0.25},
+  float:{x:0.15,y:0.35,z:0.1,rotate:0.15}, parallax:{x:0.8,y:0.8,z:0.7,rotate:0}, depth:{x:0,y:0,z:1,rotate:0}, rotate:{x:0.2,y:0.2,z:0,rotate:1},
+  skew:{x:0.25,y:0,z:0,rotate:0.8}, split:{x:1,y:0,z:0,rotate:0}, curtain:{x:0,y:1,z:0,rotate:0}, glide:{x:0.5,y:0.25,z:0,rotate:0},
+  track:{x:1,y:0.15,z:0.25,rotate:0}, zoom:{x:0,y:0,z:1,rotate:0}, pulse:{x:0,y:0,z:0,rotate:0},
 }
 
 const resolveTransform = (preset, progress, velocity, direction) => {
@@ -57,15 +33,26 @@ const resolveTransform = (preset, progress, velocity, direction) => {
   const directionSign = direction || 1
 
   return {
-    x: f.x * v.distance * edge * 80 + directionSign * speed * f.x * 18,
-    y: f.y * v.distance * edge * 90 - directionSign * speed * f.y * 10,
-    z: f.z * v.distance * edge * 90,
+    x: f.x * v.distance * edge * 80 + directionSign * speed * f.x * 14,
+    y: f.y * v.distance * edge * 82 - directionSign * speed * f.y * 8,
+    z: f.z * v.distance * edge * 70,
     scale: 1 - edge * (1 - v.scale),
-    rotate: f.rotate * edge * 7 + directionSign * speed * f.rotate * 1.8,
-    blur: edge * v.blur * 10 + speed * v.blur * 2.5,
-    skew: f.x * directionSign * speed * (preset.family === 'skew' ? 5 : 1.5),
-    opacity: clamp(0.58 + focusPhase * 0.42 + travel * 0.04),
+    rotate: f.rotate * edge * 6 + directionSign * speed * f.rotate * 1.5,
+    blur: Math.min(edge * v.blur * 6 + speed * v.blur, 2.5),
+    skew: f.x * directionSign * speed * (preset.family === 'skew' ? 4 : 1.25),
+    opacity: clamp(0.62 + focusPhase * 0.38 + travel * 0.035),
   }
+}
+
+const isCompactBlurCandidate = (node) => {
+  if (!(node instanceof HTMLElement)) return false
+  if (node.matches('.section-title, .hero h1, .hero-number, .contact .section-title, section[data-motion-section], .container')) return false
+  const rect = node.getBoundingClientRect()
+  const area = rect.width * rect.height
+  const textLength = (node.textContent || '').trim().length
+  if (area <= 0 || area > 90000 || textLength > 180) return false
+  if (node.tagName === 'IMG' || node.tagName === 'VIDEO') return area < 60000
+  return true
 }
 
 export const applyMotionPreset = (element, presetName, state) => {
@@ -91,15 +78,15 @@ const selector = [
   '.hero-number', 'footer [data-motion]',
 ].join(',')
 
-const fallbackPresets = [
-  'FadeCinematic', 'RiseFluid', 'ParallaxDeep', 'DepthCinematic', 'GlideSmooth',
-  'RevealSlow', 'TrackWide', 'ZoomCinematic', 'FocusSoft', 'FloatFluid',
-]
+const fallbackPresets = ['FadeCinematic','RiseFluid','ParallaxDeep','DepthCinematic','GlideSmooth','RevealSlow','TrackWide','ZoomCinematic','FocusSoft','FloatFluid']
 
 export const stampMotionPreset = (root = document) => {
   const nodes = [...root.querySelectorAll(selector)]
   nodes.forEach((node, index) => {
     if (!node.dataset.motionPreset) node.dataset.motionPreset = fallbackPresets[index % fallbackPresets.length]
+    const blurSafe = isCompactBlurCandidate(node)
+    node.toggleAttribute('data-motion-blur-safe', blurSafe)
+    node.classList.toggle('motion-no-blur', !blurSafe)
   })
   return nodes
 }
@@ -109,7 +96,7 @@ export const createMotionDirector = ({ root = document } = {}) => {
   const smoothVelocity = { value: 0 }
 
   const render = (state) => {
-    smoothVelocity.value += ((state.velocity || 0) - smoothVelocity.value) * 0.16
+    smoothVelocity.value += ((state.velocity || 0) - smoothVelocity.value) * 0.14
     const next = { ...state, velocity: smoothVelocity.value }
     nodes.forEach((node) => applyMotionPreset(node, node.dataset.motionPreset, next))
   }
