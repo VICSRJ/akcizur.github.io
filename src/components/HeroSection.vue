@@ -1,5 +1,5 @@
 <template>
-  <section class="hero" id="top" data-motion-section>
+  <section class="hero" id="top" data-motion-section data-motion-sequence="OpeningFilm">
     <div class="container" data-motion-preset="ParallaxDeep">
       <div class="hero-grid">
         <div>
