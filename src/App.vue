@@ -12,6 +12,7 @@ import SiteFooter from './components/SiteFooter.vue'
 import { navLinks, aboutItems, services, portfolioItems } from './content/siteContent.js'
 import { useSectionMotion } from './composables/useSectionMotion.js'
 import { useSmoothScroll } from './composables/useSmoothScroll.js'
+import { useStoryMotion } from './composables/useStoryMotion.js'
 
 const isMenuOpen = ref(false)
 
@@ -29,6 +30,7 @@ watch(isMenuOpen, (value) => {
 
 useSmoothScroll()
 useSectionMotion()
+useStoryMotion()
 
 onMounted(() => {
   document.documentElement.classList.add('motion-ready')
@@ -42,10 +44,12 @@ onMounted(() => {
     @toggle-menu="toggleMenu"
     @navigate="closeMenu"
   />
-  <HeroSection />
-  <AboutSection :items="aboutItems" />
-  <ServicesSection :items="services" />
-  <PortfolioSection :items="portfolioItems" />
-  <ContactSection />
+  <main class="story-scene">
+    <HeroSection />
+    <AboutSection :items="aboutItems" />
+    <ServicesSection :items="services" />
+    <PortfolioSection :items="portfolioItems" />
+    <ContactSection />
+  </main>
   <SiteFooter />
 </template>
