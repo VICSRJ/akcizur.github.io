@@ -1,6 +1,6 @@
 # RUZICKA Jakub — Vue + Vite
 
-Převod původního statického webu do přehledné Vue struktury se zachováním vzhledu.
+Minimalistické portfolio ve Vue + Vite s filmovým scroll-sync motion systémem.
 
 ## Spuštění
 
@@ -17,29 +17,101 @@ npm run build
 
 ## GitHub Pages
 
-Projekt je připravený pro nasazení pod GitHub Pages i pro jiné subcesty.
-
-### Lokální build pro Pages
+Projekt je připravený pro GitHub Pages i jiné subcesty.
 
 ```bash
 VITE_BASE_PATH=/nazev-repozitare/ npm run build
 ```
 
-### Build přes GitHub Actions
+Workflow `.github/workflows/deploy.yml` nastavuje base path automaticky podle názvu repozitáře.
 
-Workflow v `.github/workflows/deploy.yml` nastaví `VITE_BASE_PATH` automaticky z názvu repozitáře.
+## Cinematic Motion Engine
 
-### Poznámka k base path
+Motion systém je rozdělený do čtyř vrstev:
 
-Pokud projekt neběží na rootu domény, musí být `base` ve Vite nastavený na správnou subcestu. V tomto projektu je podporovaný přes:
+```text
+scroll input
+   ↓
+velocity + direction
+   ↓
+scene progress / focus / enter / exit
+   ↓
+Motion Director
+   ↓
+300 motion presets
+   ↓
+parallax / depth / blur / scale / rotate / opacity
+   ↓
+CSS variables + GPU transforms
+```
 
-- `VITE_BASE_PATH`
-- `mode = github-pages`
-- `GITHUB_PAGES=true`
+### 300 presetů
+
+`src/motion/motionPresets.js` generuje přesně 300 parametrických recipes:
+
+- 25 motion families
+- 12 variant pro každou family
+- 300 unikátních presetů
+- společná matematika a jednotný runtime
+
+Příklady:
+
+`FadeCinematic` · `RevealCinematic` · `ParallaxDeep` · `DepthCinematic` · `TrackWide` · `CurtainCinematic`
+
+### Scroll sync
+
+`src/composables/useStoryMotion.js` počítá kontinuální stav každé scény:
+
+- progress
+- focus
+- enter / exit
+- travel
+- velocity
+- direction
+- camera X/Y
+- scale
+- blur
+- opacity
+
+Každá scéna má vlastní `Motion Director`, takže se její timeline navzájem nepřepisují.
+
+### Motion Director
+
+`src/motion/motionDirector.js` převádí preset na GPU-friendly CSS variables:
+
+```css
+--motion-x
+--motion-y
+--motion-z
+--motion-scale
+--motion-rotate
+--motion-skew
+--motion-blur
+--motion-opacity
+--motion-duration
+```
+
+### Scene choreography
+
+- Hero — opening camera shot
+- About — focus / depth reveal
+- Services — track / rhythm
+- Portfolio — depth / camera sweep
+- Contact — cinematic climax / resolution
+
+### Accessibility
+
+`prefers-reduced-motion` deaktivuje transformace, blur a transition layers.
 
 ## Struktura
 
-- `src/components` — rozdělené sekce webu
-- `src/content` — texty a data
-- `src/styles` — původní CSS rozdělené na hlavní, animace a mobilní úpravy
-- `public/img` — SVG assety beze změny
+- `src/components` — sekce webu
+- `src/content` — obsah a data
+- `src/composables` — smooth scroll + scene orchestration
+- `src/motion/motionPresets.js` — 300 presetů
+- `src/motion/motionDirector.js` — runtime resolver
+- `src/styles/animations.css` — základní reveal systém
+- `src/styles/story.css` — scene / camera choreography
+- `src/styles/motion.css` — Motion Director output
+- `src/styles/mobile.css` — responzivní úpravy
+- `public/img` — SVG assety
