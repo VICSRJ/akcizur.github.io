@@ -1,5 +1,6 @@
 import { getMotionPreset } from './motionPresets.js'
 import { getMotionSequence } from './motionSequences.js'
+import { solveDynamicMotion, primeDynamicState } from './dynamicSolver.js'
 
 const clamp = (value, min = 0, max = 1) => Math.min(Math.max(value, min), max)
 const smooth = (value, power = 1.35) => Math.pow(clamp(value), power)
@@ -27,7 +28,6 @@ const resolveTransform = (preset, progress, velocity, direction, sequenceEnergy 
   const boost = role === 'title' ? 1.08 : role === 'camera' ? .72 : role === 'cta' ? 1.05 : role === 'rule' ? .55 : 1
   const index = Number.isFinite(preset.index) ? preset.index : 0
   const stagger = Math.sin(index * .9 + sequencePhase * Math.PI) * sequenceEnergy * .035
-
   return {
     x: (f.x * v.distance * edge * 72 + directionSign * speed * f.x * 12 + seedWave * (1 - edge) * 8) * boost,
     y: (f.y * v.distance * edge * 76 - directionSign * speed * f.y * 7 + pulse * f.y * 5 + stagger * 22) * boost,
@@ -66,13 +66,21 @@ const getSequenceState = (sequence, progress) => {
   return { phase, beatIndex, energy: clamp((1 - Math.abs(phase * 2 - 1)) * (sequence.intensity ?? .7)), overlap: current.overlap || 0 }
 }
 
-export const applyMotionPreset = (element, presetName, state) => {
+export const applyMotionPreset = (element, presetName, state, dynamic = null) => {
   if (!element) return
   const base = typeof presetName === 'string' ? getMotionPreset(presetName) : presetName
   const preset = { ...base, index: Number(element.style.getPropertyValue('--motion-index')) || 0 }
   const role = element.dataset.motionRole || ''
   const values = resolveTransform(preset, state.progress ?? .5, state.velocity ?? 0, state.direction ?? 1, state.sequenceEnergy ?? 0, state.sequencePhase ?? 0, role)
   const duration = variantMap[preset.variant]?.duration ?? 1.2
+  if (dynamic) {
+    values.x += dynamic.x
+    values.y += dynamic.y
+    values.z += dynamic.z
+    values.rotate += dynamic.rz
+    values.scale *= dynamic.scale
+    values.opacity *= dynamic.opacity
+  }
   element.style.setProperty('--motion-x', `${values.x.toFixed(2)}px`)
   element.style.setProperty('--motion-y', `${values.y.toFixed(2)}px`)
   element.style.setProperty('--motion-z', `${values.z.toFixed(2)}px`)
@@ -82,6 +90,12 @@ export const applyMotionPreset = (element, presetName, state) => {
   element.style.setProperty('--motion-skew', `${values.skew.toFixed(3)}deg`)
   element.style.setProperty('--motion-opacity', values.opacity.toFixed(4))
   element.style.setProperty('--motion-duration', `${duration}s`)
+  if (dynamic) {
+    element.style.setProperty('--motion-dynamic-energy', dynamic.energy.toFixed(4))
+    element.style.setProperty('--motion-dynamic-focus', dynamic.focus.toFixed(4))
+    element.style.setProperty('--motion-dynamic-depth', dynamic.depth.toFixed(4))
+    element.style.setProperty('--motion-dynamic-mode', dynamic.mode)
+  }
 }
 
 export const stampMotionPreset = (root = document) => {
@@ -93,6 +107,7 @@ export const stampMotionPreset = (root = document) => {
     node.toggleAttribute('data-motion-blur-safe', isCompactBlurCandidate(node))
     node.classList.toggle('motion-no-blur', !node.hasAttribute('data-motion-blur-safe'))
   })
+  primeDynamicState(root)
   return nodes
 }
 
@@ -110,7 +125,20 @@ export const createMotionDirector = ({ root = document } = {}) => {
     root.style.setProperty('--sequence-energy', sequenceState.energy.toFixed(4))
     root.style.setProperty('--sequence-beat', String(sequenceState.beatIndex))
     root.style.setProperty('--sequence-overlap', String(sequenceState.overlap))
-    nodes.forEach((node) => applyMotionPreset(node, node.dataset.motionPreset, { ...next, sequenceEnergy: sequenceState.energy, sequencePhase: sequenceState.phase }))
+
+    nodes.forEach((node) => {
+      const dynamic = solveDynamicMotion(node, {
+        ...next,
+        sequenceEnergy: sequenceState.energy,
+        sequencePhase: sequenceState.phase,
+        sequenceBeat: sequenceState.beatIndex,
+      })
+      applyMotionPreset(node, node.dataset.motionPreset, {
+        ...next,
+        sequenceEnergy: sequenceState.energy,
+        sequencePhase: sequenceState.phase,
+      }, dynamic)
+    })
   }
 
   return { render, nodes, presetCount: nodes.length, sequence, sequenceName: sequence.name }
