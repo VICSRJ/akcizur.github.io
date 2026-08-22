@@ -1,16 +1,21 @@
-import { gsap } from 'gsap'
 import { getMotionPreset } from './motionPresets.js'
 
-const clamp = gsap.utils.clamp(0, 1)
+const clamp = (value, min = 0, max = 1) => Math.min(Math.max(value, min), max)
 const smooth = (value, power = 1.35) => Math.pow(clamp(value), power)
 
 const variantMap = {
-  soft: { distance: 0.65, blur: 0.25, scale: 0.985, duration: 1.35 }, strong: { distance: 1.35, blur: 0.55, scale: 0.965, duration: 0.95 },
-  slow: { distance: 1.05, blur: 0.3, scale: 0.98, duration: 1.65 }, fast: { distance: 0.85, blur: 0.28, scale: 0.975, duration: 0.65 },
-  elastic: { distance: 1.2, blur: 0.35, scale: 0.97, duration: 1.1 }, smooth: { distance: 0.95, blur: 0.25, scale: 0.98, duration: 1.25 },
-  sharp: { distance: 0.8, blur: 0.15, scale: 0.978, duration: 0.8 }, cinematic: { distance: 1.1, blur: 0.4, scale: 0.97, duration: 1.45 },
-  fluid: { distance: 0.9, blur: 0.22, scale: 0.982, duration: 1.15 }, deep: { distance: 1.5, blur: 0.5, scale: 0.95, duration: 1.55 },
-  wide: { distance: 1.25, blur: 0.3, scale: 0.97, duration: 1.2 }, micro: { distance: 0.35, blur: 0.08, scale: 0.992, duration: 0.55 },
+  soft: { distance: 0.65, blur: 0.12, scale: 0.985, duration: 1.35 },
+  strong: { distance: 1.35, blur: 0.24, scale: 0.965, duration: 0.95 },
+  slow: { distance: 1.05, blur: 0.14, scale: 0.98, duration: 1.65 },
+  fast: { distance: 0.85, blur: 0.12, scale: 0.975, duration: 0.65 },
+  elastic: { distance: 1.2, blur: 0.16, scale: 0.97, duration: 1.1 },
+  smooth: { distance: 0.95, blur: 0.12, scale: 0.98, duration: 1.25 },
+  sharp: { distance: 0.8, blur: 0.08, scale: 0.978, duration: 0.8 },
+  cinematic: { distance: 1.1, blur: 0.18, scale: 0.97, duration: 1.45 },
+  fluid: { distance: 0.9, blur: 0.1, scale: 0.982, duration: 1.15 },
+  deep: { distance: 1.5, blur: 0.28, scale: 0.95, duration: 1.55 },
+  wide: { distance: 1.25, blur: 0.14, scale: 0.97, duration: 1.2 },
+  micro: { distance: 0.35, blur: 0.04, scale: 0.992, duration: 0.55 },
 }
 
 const familyMap = {
@@ -27,7 +32,6 @@ const resolveTransform = (preset, progress, velocity, direction) => {
   const v = variantMap[preset.variant] || variantMap.cinematic
   const f = familyMap[preset.family] || familyMap.fade
   const focusPhase = smooth(1 - Math.abs(progress * 2 - 1))
-  const travel = clamp(1 - Math.abs(progress * 2 - 1))
   const edge = 1 - focusPhase
   const speed = Math.min(Math.abs(velocity), 1)
   const directionSign = direction || 1
@@ -38,9 +42,9 @@ const resolveTransform = (preset, progress, velocity, direction) => {
     z: f.z * v.distance * edge * 70,
     scale: 1 - edge * (1 - v.scale),
     rotate: f.rotate * edge * 6 + directionSign * speed * f.rotate * 1.5,
-    blur: Math.min(edge * v.blur * 6 + speed * v.blur, 2.5),
+    blur: Math.min(edge * v.blur * 4 + speed * v.blur * 0.65, 1.25),
     skew: f.x * directionSign * speed * (preset.family === 'skew' ? 4 : 1.25),
-    opacity: clamp(0.62 + focusPhase * 0.38 + travel * 0.035),
+    opacity: clamp(0.66 + focusPhase * 0.34),
   }
 }
 
@@ -50,8 +54,8 @@ const isCompactBlurCandidate = (node) => {
   const rect = node.getBoundingClientRect()
   const area = rect.width * rect.height
   const textLength = (node.textContent || '').trim().length
-  if (area <= 0 || area > 90000 || textLength > 180) return false
-  if (node.tagName === 'IMG' || node.tagName === 'VIDEO') return area < 60000
+  if (area <= 0 || area > 60000 || textLength > 140) return false
+  if (node.tagName === 'IMG' || node.tagName === 'VIDEO') return area < 42000
   return true
 }
 
