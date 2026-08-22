@@ -10,9 +10,8 @@ import ContactSection from './components/ContactSection.vue'
 import SiteFooter from './components/SiteFooter.vue'
 
 import { navLinks, aboutItems, services, portfolioItems } from './content/siteContent.js'
-import { useSectionMotion } from './composables/useSectionMotion.js'
 import { useSmoothScroll } from './composables/useSmoothScroll.js'
-import { useStoryMotion } from './composables/useStoryMotion.js'
+import { useRemixMotion } from './composables/useRemixMotion.js'
 
 const isMenuOpen = ref(false)
 
@@ -29,8 +28,7 @@ watch(isMenuOpen, (value) => {
 })
 
 useSmoothScroll()
-useSectionMotion()
-useStoryMotion()
+useRemixMotion()
 
 onMounted(() => {
   document.documentElement.classList.add('motion-ready')
