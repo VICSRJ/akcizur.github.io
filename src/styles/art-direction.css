@@ -1,0 +1,441 @@
+/* =========================================================
+   ART DIRECTION — 5 CINEMATIC SCENES
+   Shared visual language, distinct section identities.
+   ========================================================= */
+
+/* ---------- GLOBAL ---------- */
+html.motion-ready section[data-motion-section] {
+  overflow: clip;
+}
+
+html.motion-ready section[data-motion-section] .container,
+html.motion-ready section[data-motion-section] .about-item,
+html.motion-ready section[data-motion-section] .service-item,
+html.motion-ready section[data-motion-section] .portfolio-item,
+html.motion-ready section[data-motion-section] .contact-email {
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+/* ---------- 01 / HERO — OPENING SHOT ---------- */
+.hero {
+  min-height: 100svh;
+  padding-top: 10rem;
+  padding-bottom: 7rem;
+  isolation: isolate;
+}
+
+.hero::before {
+  content: '01 / OPENING';
+  position: absolute;
+  top: 7rem;
+  right: 3rem;
+  font-size: .68rem;
+  font-weight: 900;
+  letter-spacing: .22em;
+  opacity: .32;
+}
+
+.hero-grid {
+  grid-template-columns: minmax(0, 1.55fr) minmax(220px, .75fr);
+  gap: clamp(2rem, 7vw, 8rem);
+  align-items: end;
+}
+
+.hero-kicker {
+  margin-bottom: 1.5rem;
+  font-size: .7rem;
+  font-weight: 900;
+  letter-spacing: .3em;
+  opacity: .42;
+}
+
+.hero h1 {
+  max-width: 10ch;
+  text-wrap: balance;
+  letter-spacing: -.07em;
+}
+
+.hero p {
+  max-width: 34rem;
+  font-size: clamp(.95rem, 1.1vw, 1.1rem);
+}
+
+.hero-number {
+  font-variant-numeric: tabular-nums;
+  opacity: .11;
+  line-height: .78;
+  transform-origin: 80% 60%;
+}
+
+.hero-scroll-line {
+  position: absolute;
+  right: 3rem;
+  bottom: 2.5rem;
+  width: 8rem;
+  height: 1px;
+  transform-origin: right center;
+  opacity: .4;
+}
+
+.hero-scroll-line::after {
+  content: 'SCROLL';
+  position: absolute;
+  right: 0;
+  bottom: .65rem;
+  font-size: .6rem;
+  letter-spacing: .28em;
+  opacity: .6;
+}
+
+/* ---------- 02 / ABOUT — EDITORIAL MANIFESTO ---------- */
+.about {
+  min-height: 110svh;
+  padding-top: 9rem;
+  padding-bottom: 9rem;
+  background: #f7f7f4;
+}
+
+.about .container {
+  max-width: 1480px;
+}
+
+.about .section-label {
+  color: rgba(0,0,0,.46);
+}
+
+.about .section-title {
+  max-width: 10ch;
+  font-size: clamp(3.4rem, 7.2vw, 8rem);
+  letter-spacing: -.07em;
+  margin-bottom: 3.5rem;
+}
+
+.about-grid {
+  gap: 0;
+  background: transparent;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  border-top: 1px solid rgba(0,0,0,.18);
+}
+
+.about-item {
+  position: relative;
+  min-height: 24rem;
+  padding: 2.25rem 2rem 2rem;
+  border-right: 1px solid rgba(0,0,0,.18);
+  background: transparent;
+  overflow: clip;
+}
+
+.about-item:first-child { border-left: 1px solid rgba(0,0,0,.18); }
+.about-item:hover {
+  background: #000;
+  color: #fff;
+  transform: none;
+}
+
+.about-item::before {
+  content: attr(data-motion-id);
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: .55rem;
+  font-weight: 900;
+  letter-spacing: .18em;
+  opacity: .16;
+}
+
+.about-item .icon {
+  margin-bottom: 5rem;
+  opacity: .48;
+}
+
+.about-item .icon img {
+  width: 40px;
+  height: 40px;
+}
+
+.about-item h3 {
+  max-width: 12ch;
+  font-size: clamp(1.5rem, 2vw, 2.2rem);
+  letter-spacing: -.055em;
+}
+
+.about-item p {
+  max-width: 28rem;
+  margin-top: 1rem;
+  font-size: .92rem;
+}
+
+.about-rule {
+  background: currentColor;
+}
+
+/* ---------- 03 / SERVICES — KINETIC INDEX ---------- */
+.services {
+  min-height: 115svh;
+  padding-top: 10rem;
+  padding-bottom: 10rem;
+}
+
+.services .section-title {
+  font-size: clamp(4rem, 11vw, 11rem);
+  letter-spacing: -.08em;
+  margin-bottom: 2rem;
+}
+
+.services-list {
+  margin-top: 4rem;
+  border-bottom: 1px solid rgba(255,255,255,.18);
+}
+
+.service-item {
+  grid-template-columns: 8rem minmax(0,1fr) minmax(12rem, 18rem) 3rem;
+  gap: 2rem;
+  min-height: 8.5rem;
+  padding: 2rem 0;
+  border-top: 1px solid rgba(255,255,255,.18);
+  position: relative;
+}
+
+.service-item:hover {
+  padding-left: 0;
+}
+
+.service-number {
+  font-size: clamp(2.5rem, 4vw, 4rem);
+  line-height: .9;
+  letter-spacing: -.07em;
+  opacity: .28;
+}
+
+.service-item h3 {
+  font-size: clamp(2rem, 4vw, 4.5rem);
+  letter-spacing: -.06em;
+}
+
+.service-item p {
+  text-align: left;
+  max-width: 18rem;
+  justify-self: end;
+}
+
+.service-rule {
+  width: 2.25rem;
+  height: 1px;
+  background: rgba(255,255,255,.42);
+  justify-self: end;
+  transform-origin: right center;
+}
+
+.service-item::after {
+  content: '↗';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  font-size: 1.5rem;
+  opacity: .24;
+  transform: translateY(-50%);
+  transition: opacity .25s ease;
+}
+
+.service-item:hover::after { opacity: 1; }
+
+/* ---------- 04 / PORTFOLIO — IMMERSIVE GALLERY ---------- */
+.portfolio {
+  min-height: 140svh;
+  padding-top: 10rem;
+  padding-bottom: 12rem;
+  background: #f7f7f4;
+}
+
+.portfolio .section-title {
+  font-size: clamp(4rem, 10vw, 10rem);
+  letter-spacing: -.08em;
+  margin-bottom: 2rem;
+}
+
+.portfolio-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12rem;
+  margin-top: 5rem;
+  background: transparent;
+}
+
+.portfolio-item {
+  min-height: min(72vh, 760px);
+  aspect-ratio: auto;
+  border: 1px solid rgba(0,0,0,.14);
+  background: #ecece7;
+  overflow: clip;
+  transform-origin: 50% 50%;
+}
+
+.portfolio-item:nth-child(2) { margin-left: 9vw; margin-right: 5vw; }
+.portfolio-item:nth-child(3) { margin-left: 18vw; margin-right: 0; }
+.portfolio-item:nth-child(4) { margin-left: 3vw; margin-right: 14vw; }
+
+.portfolio-bg {
+  background: #000;
+  transform: scale(1.045);
+  opacity: .08;
+}
+
+.portfolio-item:hover .portfolio-bg {
+  transform: scale(1.09);
+}
+
+.portfolio-content {
+  inset: auto 3.5rem 3.5rem;
+  color: #000;
+}
+
+.portfolio-item:hover .portfolio-content { color: #fff; }
+
+.portfolio-number {
+  font-size: clamp(6rem, 16vw, 15rem);
+  margin-bottom: 1rem;
+  letter-spacing: -.09em;
+}
+
+.portfolio-content h3 {
+  max-width: 9ch;
+  font-size: clamp(2.5rem, 5vw, 6rem);
+  line-height: .88;
+  letter-spacing: -.07em;
+}
+
+.portfolio-content p {
+  max-width: 24rem;
+  margin-top: 1.2rem;
+}
+
+.portfolio-rule {
+  display: block;
+  width: min(18rem, 35vw);
+  height: 1px;
+  margin-top: 1.5rem;
+  background: currentColor;
+  transform-origin: left center;
+}
+
+/* ---------- 05 / CONTACT — RESOLUTION ---------- */
+.contact {
+  min-height: 105svh;
+  padding-top: 13rem;
+  padding-bottom: 10rem;
+  text-align: left;
+}
+
+.contact .container {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  gap: 2rem 6rem;
+  align-items: end;
+}
+
+.contact .section-label {
+  grid-column: 1 / -1;
+  margin-bottom: 1rem;
+}
+
+.contact .section-title {
+  margin: 0;
+  font-size: clamp(5rem, 14vw, 13rem);
+  line-height: .82;
+  letter-spacing: -.09em;
+}
+
+.contact-email {
+  align-self: end;
+  margin-bottom: .35rem;
+  font-size: clamp(1.2rem, 2vw, 2.25rem);
+  letter-spacing: -.03em;
+  border-bottom: 1px solid rgba(255,255,255,.28);
+}
+
+.contact-email:hover {
+  letter-spacing: .08em;
+  font-weight: 400;
+}
+
+.contact-rule {
+  grid-column: 1 / -1;
+  display: block;
+  width: 100%;
+  height: 1px;
+  margin-top: 4rem;
+  background: rgba(255,255,255,.22);
+  transform-origin: left center;
+}
+
+/* ---------- FOOTER / END CREDITS ---------- */
+footer {
+  position: relative;
+  min-height: 22rem;
+  display: flex;
+  align-items: flex-end;
+}
+
+footer::before {
+  content: 'END CREDITS';
+  position: absolute;
+  top: 2rem;
+  left: 3rem;
+  font-size: .6rem;
+  letter-spacing: .28em;
+  opacity: .26;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-number { text-align: left; margin-top: 1rem; }
+  .about-item { min-height: 20rem; padding-inline: 1.5rem; }
+  .service-item { grid-template-columns: 5rem 1fr 2rem; }
+  .service-item p { grid-column: 2 / -1; justify-self: start; }
+  .portfolio-grid { gap: 6rem; }
+  .portfolio-item,
+  .portfolio-item:nth-child(2),
+  .portfolio-item:nth-child(3),
+  .portfolio-item:nth-child(4) { margin-left: 0; margin-right: 0; }
+  .portfolio-item { min-height: 65vh; }
+  .contact .container { grid-template-columns: 1fr; }
+  .contact-email { justify-self: start; }
+}
+
+@media (max-width: 700px) {
+  .hero::before { right: 1.5rem; }
+  .hero-scroll-line { right: 1.5rem; width: 5rem; }
+  .about { min-height: auto; }
+  .about-grid { grid-template-columns: 1fr; }
+  .about-item,
+  .about-item:first-child { border-left: 1px solid rgba(0,0,0,.18); }
+  .about-item { border-right: 1px solid rgba(0,0,0,.18); min-height: 18rem; }
+  .about-item .icon { margin-bottom: 3rem; }
+  .services { min-height: auto; }
+  .service-item { grid-template-columns: 4rem 1fr 2rem; gap: 1rem; min-height: 7rem; }
+  .service-item h3 { font-size: clamp(1.65rem, 8vw, 2.5rem); }
+  .service-number { font-size: 2rem; }
+  .service-item p { font-size: .78rem; }
+  .portfolio { min-height: auto; }
+  .portfolio-grid { gap: 3rem; }
+  .portfolio-item { min-height: 70svh; }
+  .portfolio-content { inset: auto 1.5rem 1.5rem; }
+  .portfolio-content h3 { font-size: clamp(2.3rem, 11vw, 4.5rem); }
+  .portfolio-number { font-size: 7rem; }
+  .contact { min-height: 88svh; text-align: left; padding-inline: 1.5rem; }
+  .contact .section-title { font-size: clamp(4rem, 18vw, 8rem); }
+  .contact-email { font-size: 1rem; }
+  footer::before { left: 1.5rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-scroll-line,
+  .about-item,
+  .service-item,
+  .portfolio-item,
+  .contact-rule { transition: none !important; }
+}
