@@ -1,4 +1,5 @@
 import { onBeforeUnmount, onMounted } from 'vue'
+import { createMotionDirector } from '../motion/motionDirector.js'
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max)
 const smoothstep = (value) => value * value * (3 - 2 * value)
@@ -6,15 +7,10 @@ const reducedMotion = () =>
   typeof window !== 'undefined' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-/**
- * Cinematic story engine.
- * Scroll is treated as a camera timeline. Every scene exposes a continuous
- * motion state consumed by CSS: progress, approach, focus, exit, depth,
- * velocity and chapter timing.
- */
 export function useStoryMotion() {
   let raf = 0
   let sections = []
+  let director = null
   let previousY = 0
   let previousTime = 0
   let velocity = 0
@@ -43,26 +39,40 @@ export function useStoryMotion() {
       const exit = clamp((-distance + 0.08) / 0.92, 0, 1)
       const travel = clamp(1 - absoluteDistance / 1.2, 0, 1)
       const chapter = index / Math.max(sections.length - 1, 1)
-      const isActive = focus > 0.16
+      const progress = clamp((distance + 1) / 2, 0, 1)
+      const direction = Math.sign(velocity) || 1
 
       section.style.setProperty('--story-index', index)
       section.style.setProperty('--story-chapter', chapter.toFixed(4))
+      section.style.setProperty('--story-progress', progress.toFixed(4))
       section.style.setProperty('--story-distance', distance.toFixed(4))
       section.style.setProperty('--story-focus', focusSoft.toFixed(4))
       section.style.setProperty('--story-enter', enter.toFixed(4))
       section.style.setProperty('--story-exit', exit.toFixed(4))
       section.style.setProperty('--story-travel', travel.toFixed(4))
       section.style.setProperty('--story-velocity', clamp(Math.abs(velocity) * 8, 0, 1).toFixed(4))
-      section.style.setProperty('--story-direction', Math.sign(velocity).toString())
+      section.style.setProperty('--story-direction', direction.toString())
       section.style.setProperty('--story-camera-y', ((-distance * 30) + velocity * -18).toFixed(2) + 'px')
       section.style.setProperty('--story-camera-x', (Math.sin(index * 1.37) * distance * 8).toFixed(2) + 'px')
       section.style.setProperty('--story-scale', (1 + focusSoft * 0.012 - exit * 0.045 - (1 - enter) * 0.018).toFixed(4))
       section.style.setProperty('--story-blur', (exit * 5.5 + (1 - enter) * 1.5).toFixed(2) + 'px')
       section.style.setProperty('--story-opacity', (0.68 + focusSoft * 0.32 - exit * 0.24 - (1 - enter) * 0.08).toFixed(4))
 
-      section.classList.toggle('story-active', isActive)
+      section.classList.toggle('story-active', focus > 0.16)
       section.classList.toggle('story-past', distance <= -0.54)
       section.classList.toggle('story-future', distance >= 0.54)
+
+      director?.render({
+        progress,
+        distance,
+        focus: focusSoft,
+        enter,
+        exit,
+        travel,
+        velocity,
+        direction,
+        chapter,
+      })
     }
   }
 
@@ -77,6 +87,7 @@ export function useStoryMotion() {
 
     if (reducedMotion()) return
 
+    director = createMotionDirector({ root: document })
     update(previousTime)
     window.addEventListener('scroll', requestUpdate, { passive: true })
     window.addEventListener('resize', requestUpdate, { passive: true })
@@ -86,5 +97,6 @@ export function useStoryMotion() {
     window.removeEventListener('scroll', requestUpdate)
     window.removeEventListener('resize', requestUpdate)
     if (raf) cancelAnimationFrame(raf)
+    director = null
   })
 }
