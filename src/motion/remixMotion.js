@@ -43,6 +43,39 @@ const setVar = (element, name, value, unit = '') => {
   element.style.setProperty(name, `${value.toFixed(3)}${unit}`)
 }
 
+const shadowToneFor = (section) => {
+  if (section.classList.contains('about') || section.classList.contains('portfolio')) return [0, 0, 0]
+  return [255, 255, 255]
+}
+
+const rgba = (rgb, alpha) => `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha.toFixed(3)})`
+
+/*
+ * ZURB-inspired layered shadow generator.
+ * The original experiment builds depth from many 1px hard shadows rather
+ * than relying on a single blurred drop shadow. Here the same idea is driven
+ * by the existing scene vector, scroll velocity and element depth.
+ */
+const buildZurbShadow = ({ rgb, x, y, depth, velocity, opacity, text = false }) => {
+  const directionX = Math.sign(x || 1)
+  const directionY = Math.sign(y || 1)
+  const baseX = x * (0.55 + depth * 0.9) + directionX * velocity * 1.25
+  const baseY = y * (0.55 + depth * 0.9) + directionY * velocity * 1.65
+  const steps = text ? 5 : 7
+  const density = text ? 0.72 : 0.92
+  const alpha = clamp((0.05 + depth * 0.10 + velocity * 0.10) * opacity, 0.04, 0.24)
+  const stack = []
+
+  for (let index = 1; index <= steps; index += 1) {
+    const scale = index / steps
+    stack.push(`${(baseX * scale).toFixed(2)}px ${(baseY * scale).toFixed(2)}px 0 ${rgba(rgb, alpha * density * (1 - index * 0.07))}`)
+  }
+
+  const soft = `${(baseX * 1.08).toFixed(2)}px ${(baseY * 1.08).toFixed(2)}px ${(2 + depth * 7 + velocity * 4).toFixed(2)}px ${rgba(rgb, alpha * 0.72)}`
+  stack.push(soft)
+  return stack.join(', ')
+}
+
 export const remixSection = (section, state, index) => {
   const profile = sceneFor(section, index)
   const distance = Number(state.distance || 0)
@@ -55,6 +88,7 @@ export const remixSection = (section, state, index) => {
   const approach = clamp(1 - Math.abs(distance) / 1.05)
   const edge = 1 - approach
   const cinematic = 0.74 + energy * 0.26
+  const shadowRGB = shadowToneFor(section)
 
   setVar(section, '--remix-scene-x', profile.x * edge * 38 + velocity * direction * profile.x * 6, 'px')
   setVar(section, '--remix-scene-y', profile.y * edge * 48 - velocity * direction * profile.y * 8, 'px')
@@ -90,6 +124,26 @@ export const remixSection = (section, state, index) => {
     const shadowBlur = 1.2 + shadowDepth * 8.5
     const shadowAlpha = clamp(0.13 + shadowDepth * 0.15 + velocity * 0.05, 0.13, 0.32)
 
+    const zurbShadow = buildZurbShadow({
+      rgb: shadowRGB,
+      x: shadowX,
+      y: shadowY,
+      depth: shadowDepth,
+      velocity,
+      opacity,
+      text: ['title', 'heading', 'index', 'depth'].includes(element.dataset.motionRole),
+    })
+
+    const hoverShadow = buildZurbShadow({
+      rgb: shadowRGB,
+      x: shadowX * 1.15,
+      y: shadowY * 1.15,
+      depth: clamp(shadowDepth + 0.25, 0, 1.5),
+      velocity: clamp(velocity + 0.15),
+      opacity: Math.min(1, opacity + 0.12),
+      text: false,
+    })
+
     setVar(element, '--remix-x', x, 'px')
     setVar(element, '--remix-y', y, 'px')
     setVar(element, '--remix-z', z, 'px')
@@ -103,6 +157,9 @@ export const remixSection = (section, state, index) => {
     setVar(element, '--remix-layer', zLayer)
     element.style.setProperty('--remix-scene-index', String(index))
     element.style.setProperty('--remix-stagger', stagger.toFixed(3))
+    element.style.setProperty('--remix-zurb-shadow', zurbShadow)
+    element.style.setProperty('--remix-zurb-shadow-hover', hoverShadow)
+    element.style.setProperty('--remix-zurb-text-shadow', zurbShadow)
   })
 }
 
