@@ -1,0 +1,174 @@
+/* =========================================================
+   ABOUT STORY — POLISH PASS
+   Element-specific choreography for Scene 02.
+   ========================================================= */
+
+html.motion-ready .about {
+  --about-enter-ease: cubic-bezier(.16, 1, .3, 1);
+  --about-focus-power: var(--sequence-energy, 0);
+}
+
+/* Label arrives before the title and then becomes nearly static. */
+html.motion-ready .about .section-label[data-motion-id="about-label"] {
+  transform:
+    translate3d(
+      calc(var(--about-distance) * 18px - var(--about-energy) * 2px),
+      calc(var(--about-distance) * 10px),
+      0
+    )
+    scale(calc(.94 + var(--about-focus) * .06));
+  transition: none;
+}
+
+/* Main title: clean editorial mask, no blur. */
+html.motion-ready .about .section-title[data-motion-id="about-title"] {
+  text-wrap: balance;
+  transform:
+    translate3d(
+      calc(var(--about-distance) * -18px + var(--about-energy) * 4px),
+      calc((1 - var(--about-focus)) * 24px),
+      0
+    )
+    scale(calc(.965 + var(--about-focus) * .035));
+  transform-origin: 0 50%;
+}
+
+/* Three cards become a deliberate left-to-right camera sentence. */
+html.motion-ready .about .about-item {
+  --shot-index: var(--i, 0);
+  --shot-x: calc((var(--shot-index) - 1) * 10px);
+  --shot-y: calc((1 - var(--about-focus)) * (28px + var(--shot-index) * 8px));
+  --shot-energy: calc(var(--about-energy) * (1 - var(--shot-index) * .12));
+  transform:
+    translate3d(
+      calc(var(--about-distance) * var(--shot-x) - var(--shot-energy) * 2px),
+      calc(var(--shot-y) - var(--shot-energy) * 5px),
+      0
+    )
+    scale(calc(.965 + var(--about-focus) * .035));
+  opacity: calc(.42 + var(--about-focus) * .58);
+}
+
+/* Card 2 is the visual anchor. */
+html.motion-ready .about .about-item:nth-child(2) {
+  z-index: 2;
+}
+
+/* Icon = small camera object, not a generic fade. */
+html.motion-ready .about .about-item .icon {
+  transform:
+    translate3d(
+      calc(var(--about-distance) * -6px),
+      calc((1 - var(--about-focus)) * 20px - var(--about-energy) * 3px),
+      0
+    )
+    rotate(calc((1 - var(--about-focus)) * -6deg));
+  transition: none;
+}
+
+html.motion-ready .about .about-item .icon img {
+  transform:
+    scale(calc(.9 + var(--about-focus) * .1))
+    rotate(calc(var(--about-energy) * (var(--shot-index) - 1) * 1deg));
+  transform-origin: center;
+}
+
+/* Heading arrives just after the icon. */
+html.motion-ready .about .about-item h3 {
+  transform:
+    translate3d(0, calc((1 - var(--about-focus)) * 16px), 0)
+    scale(calc(.985 + var(--about-focus) * .015));
+  opacity: calc(.5 + var(--about-focus) * .5);
+}
+
+/* Copy has the longest settling time. */
+html.motion-ready .about .about-item p {
+  transform:
+    translate3d(
+      calc(var(--about-distance) * var(--shot-index) * -1.5px),
+      calc((1 - var(--about-focus)) * 22px),
+      0
+    );
+  opacity: calc(.3 + var(--about-focus) * .7);
+}
+
+/* Rule draws the frame around each story beat. */
+html.motion-ready .about .about-rule {
+  transform-origin: left center;
+  transform: scaleX(calc(.08 + var(--about-focus) * .92));
+  opacity: calc(.12 + var(--about-focus) * .88);
+  transition: none;
+}
+
+/* Beat 1: establish. Beat 2: focus. Beat 3: release. */
+html.motion-ready .about .about-item:nth-child(1) {
+  --card-accent: .72;
+}
+
+html.motion-ready .about .about-item:nth-child(2) {
+  --card-accent: 1;
+  transform:
+    translate3d(
+      calc(var(--about-distance) * 2px),
+      calc((1 - var(--about-focus)) * 38px - var(--about-energy) * 6px),
+      0
+    )
+    scale(calc(.96 + var(--about-focus) * .04));
+}
+
+html.motion-ready .about .about-item:nth-child(3) {
+  --card-accent: .82;
+}
+
+/* Handoff into Services: the field compresses toward the lower rule. */
+html.motion-ready .about .about-grid {
+  transform:
+    translate3d(
+      0,
+      calc((1 - var(--about-focus)) * 18px - var(--about-energy) * 4px),
+      0
+    )
+    scale(calc(.995 + var(--about-focus) * .005));
+}
+
+html.motion-ready .about::after {
+  content: '';
+  position: absolute;
+  left: 8vw;
+  right: 8vw;
+  bottom: 10%;
+  height: 1px;
+  background: currentColor;
+  transform-origin: left center;
+  transform: scaleX(calc(var(--about-energy) * .9));
+  opacity: calc(var(--about-energy) * .10);
+  pointer-events: none;
+}
+
+@media (max-width: 700px) {
+  html.motion-ready .about .section-title[data-motion-id="about-title"] {
+    transform: translate3d(0, calc((1 - var(--about-focus)) * 18px), 0) scale(calc(.98 + var(--about-focus) * .02));
+  }
+
+  html.motion-ready .about .about-item,
+  html.motion-ready .about .about-item:nth-child(2) {
+    transform: translate3d(0, calc((1 - var(--about-focus)) * 22px), 0) scale(calc(.985 + var(--about-focus) * .015));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.motion-ready .about .section-label,
+  html.motion-ready .about .section-title,
+  html.motion-ready .about .about-grid,
+  html.motion-ready .about .about-item,
+  html.motion-ready .about .about-item .icon,
+  html.motion-ready .about .about-item .icon img,
+  html.motion-ready .about .about-item h3,
+  html.motion-ready .about .about-item p,
+  html.motion-ready .about .about-rule {
+    transform: none !important;
+    clip-path: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+  }
+}
