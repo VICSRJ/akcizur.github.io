@@ -1,45 +1,68 @@
 import { onBeforeUnmount, onMounted } from 'vue'
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max)
+const smoothstep = (value) => value * value * (3 - 2 * value)
 const reducedMotion = () =>
   typeof window !== 'undefined' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 /**
- * Scroll-driven story engine.
- * CSS consumes these values as a continuous cinematic state rather than a
- * one-shot reveal: depth, scale, blur, opacity and slight vertical drift.
+ * Cinematic story engine.
+ * Scroll is treated as a camera timeline. Every scene exposes a continuous
+ * motion state consumed by CSS: progress, approach, focus, exit, depth,
+ * velocity and chapter timing.
  */
 export function useStoryMotion() {
   let raf = 0
   let sections = []
+  let previousY = 0
+  let previousTime = 0
+  let velocity = 0
 
-  const update = () => {
+  const update = (time = performance.now()) => {
     raf = 0
     if (reducedMotion()) return
 
-    const viewport = window.innerHeight || 1
+    const viewport = Math.max(window.innerHeight || 1, 1)
+    const scrollY = window.scrollY
+    const dt = Math.max(time - previousTime, 16)
+    const rawVelocity = (scrollY - previousY) / dt
+    velocity += (rawVelocity - velocity) * 0.12
+    previousY = scrollY
+    previousTime = time
 
-    for (const section of sections) {
+    for (let index = 0; index < sections.length; index += 1) {
+      const section = sections[index]
       const rect = section.getBoundingClientRect()
-      const center = rect.top + rect.height / 2
-      const distance = clamp((center - viewport * 0.5) / viewport, -1.25, 1.25)
-      const progress = clamp(1 - distance / 1.8, 0, 1)
-      const focus = clamp(1 - Math.abs(distance) / 0.72, 0, 1)
-      const past = clamp(-distance, 0, 1)
-      const future = clamp(distance, 0, 1)
+      const center = rect.top + rect.height * 0.5
+      const distance = clamp((center - viewport * 0.5) / viewport, -1.5, 1.5)
+      const absoluteDistance = Math.abs(distance)
+      const focus = clamp(1 - absoluteDistance / 0.68, 0, 1)
+      const focusSoft = smoothstep(focus)
+      const enter = clamp((distance + 0.9) / 0.9, 0, 1)
+      const exit = clamp((-distance + 0.08) / 0.92, 0, 1)
+      const travel = clamp(1 - absoluteDistance / 1.2, 0, 1)
+      const chapter = index / Math.max(sections.length - 1, 1)
+      const isActive = focus > 0.16
 
-      section.style.setProperty('--story-progress', progress.toFixed(4))
+      section.style.setProperty('--story-index', index)
+      section.style.setProperty('--story-chapter', chapter.toFixed(4))
       section.style.setProperty('--story-distance', distance.toFixed(4))
-      section.style.setProperty('--story-focus', focus.toFixed(4))
-      section.style.setProperty('--story-scale', (1 - past * 0.035 - future * 0.018).toFixed(4))
-      section.style.setProperty('--story-y', ((future - past) * 14).toFixed(2) + 'px')
-      section.style.setProperty('--story-blur', (past * 5 + future * 1.5).toFixed(2) + 'px')
-      section.style.setProperty('--story-opacity', (1 - past * 0.3 - future * 0.04).toFixed(4))
+      section.style.setProperty('--story-focus', focusSoft.toFixed(4))
+      section.style.setProperty('--story-enter', enter.toFixed(4))
+      section.style.setProperty('--story-exit', exit.toFixed(4))
+      section.style.setProperty('--story-travel', travel.toFixed(4))
+      section.style.setProperty('--story-velocity', clamp(Math.abs(velocity) * 8, 0, 1).toFixed(4))
+      section.style.setProperty('--story-direction', Math.sign(velocity).toString())
+      section.style.setProperty('--story-camera-y', ((-distance * 30) + velocity * -18).toFixed(2) + 'px')
+      section.style.setProperty('--story-camera-x', (Math.sin(index * 1.37) * distance * 8).toFixed(2) + 'px')
+      section.style.setProperty('--story-scale', (1 + focusSoft * 0.012 - exit * 0.045 - (1 - enter) * 0.018).toFixed(4))
+      section.style.setProperty('--story-blur', (exit * 5.5 + (1 - enter) * 1.5).toFixed(2) + 'px')
+      section.style.setProperty('--story-opacity', (0.68 + focusSoft * 0.32 - exit * 0.24 - (1 - enter) * 0.08).toFixed(4))
 
-      section.classList.toggle('story-active', focus > 0.12)
-      section.classList.toggle('story-past', distance <= -0.58)
-      section.classList.toggle('story-future', distance >= 0.58)
+      section.classList.toggle('story-active', isActive)
+      section.classList.toggle('story-past', distance <= -0.54)
+      section.classList.toggle('story-future', distance >= 0.54)
     }
   }
 
@@ -49,9 +72,12 @@ export function useStoryMotion() {
 
   onMounted(() => {
     sections = [...document.querySelectorAll('section[data-motion-section]')]
+    previousY = window.scrollY
+    previousTime = performance.now()
+
     if (reducedMotion()) return
 
-    update()
+    update(previousTime)
     window.addEventListener('scroll', requestUpdate, { passive: true })
     window.addEventListener('resize', requestUpdate, { passive: true })
   })
