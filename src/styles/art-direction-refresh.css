@@ -1,0 +1,235 @@
+/* =========================================================
+   POINT REFRESH — cinematic proportions / hierarchy / polish
+   Deliberately overrides only weak points of art-direction.css.
+   ========================================================= */
+
+/* Global rhythm */
+html.motion-ready section[data-motion-section] {
+  --section-pad-x: clamp(1.5rem, 4vw, 3rem);
+  padding-inline: var(--section-pad-x);
+}
+
+/* 01 HERO — make the opening feel quieter and more expensive */
+.hero {
+  min-height: 100svh;
+  padding-top: clamp(8rem, 14vh, 10rem);
+  padding-bottom: clamp(5rem, 9vh, 7rem);
+}
+
+.hero-grid {
+  grid-template-columns: minmax(0, 1.7fr) minmax(180px, .55fr);
+  gap: clamp(2rem, 6vw, 7rem);
+}
+
+.hero-kicker {
+  margin-bottom: 1.15rem;
+  opacity: .52;
+}
+
+.hero h1 {
+  max-width: 8.6ch;
+  margin-bottom: clamp(1.5rem, 3vw, 2.4rem);
+}
+
+.hero-number {
+  align-self: end;
+  margin-bottom: -.05em;
+  opacity: .085;
+  font-size: clamp(7rem, 16vw, 16rem);
+}
+
+.hero-scroll-line {
+  right: var(--section-pad-x);
+  bottom: 2rem;
+  width: clamp(5rem, 10vw, 8rem);
+}
+
+/* 02 ABOUT — preserve editorial whitespace; cards become quieter */
+.about {
+  min-height: 100svh;
+  padding-top: clamp(7rem, 12vh, 9rem);
+  padding-bottom: clamp(7rem, 12vh, 9rem);
+}
+
+.about .section-title {
+  max-width: 11ch;
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+}
+
+.about-grid {
+  margin-top: 0;
+}
+
+.about-item {
+  min-height: 23rem;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.about-item::before {
+  content: '';
+}
+
+.about-item .icon {
+  margin-bottom: clamp(3rem, 7vw, 5rem);
+  opacity: .38;
+}
+
+.about-item p {
+  max-width: 24rem;
+  line-height: 1.7;
+}
+
+/* 03 SERVICES — stronger typographic index, fewer competing signals */
+.services {
+  min-height: 108svh;
+  padding-top: clamp(7rem, 12vh, 10rem);
+  padding-bottom: clamp(7rem, 12vh, 10rem);
+}
+
+.services-list {
+  margin-top: clamp(3rem, 6vw, 5rem);
+}
+
+.service-item {
+  grid-template-columns: clamp(4.5rem, 8vw, 8rem) minmax(0,1fr) minmax(10rem, 16rem) 2.25rem;
+  min-height: 7.5rem;
+  padding-block: clamp(1.5rem, 3vw, 2.2rem);
+}
+
+.service-item h3 {
+  font-size: clamp(1.9rem, 3.5vw, 4rem);
+}
+
+.service-item p {
+  opacity: .62;
+}
+
+.service-item::after {
+  opacity: .18;
+}
+
+/* 04 PORTFOLIO — less vertical waste, stronger hero card */
+.portfolio {
+  min-height: 125svh;
+  padding-top: clamp(7rem, 12vh, 10rem);
+  padding-bottom: clamp(8rem, 14vh, 11rem);
+}
+
+.portfolio-grid {
+  gap: clamp(5rem, 9vw, 9rem);
+  margin-top: clamp(3rem, 6vw, 5rem);
+}
+
+.portfolio-item {
+  min-height: min(68vh, 720px);
+  border-color: rgba(0,0,0,.16);
+}
+
+.portfolio-item:nth-child(1) {
+  margin-right: 8vw;
+}
+
+.portfolio-item:nth-child(2) {
+  margin-left: 11vw;
+  margin-right: 3vw;
+}
+
+.portfolio-item:nth-child(3) {
+  margin-left: 20vw;
+  margin-right: 5vw;
+}
+
+.portfolio-item:nth-child(4) {
+  margin-left: 5vw;
+  margin-right: 16vw;
+}
+
+.portfolio-content {
+  inset: auto clamp(1.5rem, 4vw, 3.5rem) clamp(1.5rem, 4vw, 3.5rem);
+}
+
+.portfolio-number {
+  opacity: .085;
+  line-height: .78;
+}
+
+.portfolio-content h3 {
+  max-width: 8ch;
+}
+
+.portfolio-content p {
+  opacity: .56;
+}
+
+/* 05 CONTACT — give the climax more vertical gravity */
+.contact {
+  min-height: 100svh;
+  padding-top: clamp(9rem, 16vh, 13rem);
+  padding-bottom: clamp(7rem, 12vh, 10rem);
+}
+
+.contact .container {
+  gap: 1.5rem clamp(2rem, 5vw, 6rem);
+}
+
+.contact .section-title {
+  max-width: 5.8ch;
+  margin-bottom: 0;
+}
+
+.contact-email {
+  font-size: clamp(1.15rem, 1.8vw, 2rem);
+  white-space: nowrap;
+}
+
+.contact-rule {
+  margin-top: clamp(3rem, 7vw, 5rem);
+  opacity: .55;
+}
+
+/* Footer should feel like end credits, not another content section. */
+footer {
+  min-height: 18rem;
+}
+
+/* Motion-safe hover polish: don't compete with scroll solver. */
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover { transform: translateY(-2px); }
+  .about-item:hover { box-shadow: inset 0 0 0 1px currentColor; }
+  .service-item:hover::after { transform: translateY(-50%) translateX(2px); }
+}
+
+/* Mobile — preserve hierarchy instead of shrinking desktop geometry. */
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-number { margin-top: .5rem; }
+  .service-item { grid-template-columns: 4.5rem minmax(0,1fr) 2rem; }
+  .service-item p { grid-column: 2 / -1; max-width: 30rem; }
+  .portfolio-item,
+  .portfolio-item:nth-child(1),
+  .portfolio-item:nth-child(2),
+  .portfolio-item:nth-child(3),
+  .portfolio-item:nth-child(4) {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .hero { padding-top: 7.5rem; }
+  .hero h1 { max-width: 9ch; }
+  .about-item { min-height: 16rem; }
+  .about-item .icon { margin-bottom: 2.5rem; }
+  .service-item { min-height: 6.25rem; }
+  .service-item p { margin-top: .35rem; }
+  .portfolio-grid { gap: 3.5rem; }
+  .portfolio-item { min-height: 64svh; }
+  .portfolio-content h3 { max-width: 7ch; }
+  .contact { min-height: 90svh; }
+  .contact-email { white-space: normal; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn:hover { transform: none; }
+  .service-item:hover::after { transform: translateY(-50%); }
+}
