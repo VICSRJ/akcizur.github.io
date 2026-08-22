@@ -23,7 +23,7 @@ export function useStoryMotion() {
     const scrollY = window.scrollY
     const dt = Math.max(time - previousTime, 16)
     const rawVelocity = (scrollY - previousY) / dt
-    velocity += (rawVelocity - velocity) * 0.12
+    velocity += (rawVelocity - velocity) * 0.10
     previousY = scrollY
     previousTime = time
 
@@ -40,6 +40,7 @@ export function useStoryMotion() {
       const chapter = index / Math.max(sections.length - 1, 1)
       const progress = clamp((distance + 1) / 2, 0, 1)
       const direction = Math.sign(velocity) || 1
+      const motionVelocity = clamp(Math.abs(velocity) * 6, 0, 1)
 
       section.style.setProperty('--story-index', index)
       section.style.setProperty('--story-chapter', chapter.toFixed(4))
@@ -49,13 +50,12 @@ export function useStoryMotion() {
       section.style.setProperty('--story-enter', enter.toFixed(4))
       section.style.setProperty('--story-exit', exit.toFixed(4))
       section.style.setProperty('--story-travel', travel.toFixed(4))
-      section.style.setProperty('--story-velocity', clamp(Math.abs(velocity) * 8, 0, 1).toFixed(4))
+      section.style.setProperty('--story-velocity', motionVelocity.toFixed(4))
       section.style.setProperty('--story-direction', direction.toString())
-      section.style.setProperty('--story-camera-y', ((-distance * 30) + velocity * -18).toFixed(2) + 'px')
-      section.style.setProperty('--story-camera-x', (Math.sin(index * 1.37) * distance * 8).toFixed(2) + 'px')
-      section.style.setProperty('--story-scale', (1 + focusSoft * 0.012 - exit * 0.045 - (1 - enter) * 0.018).toFixed(4))
-      section.style.setProperty('--story-blur', (exit * 5.5 + (1 - enter) * 1.5).toFixed(2) + 'px')
-      section.style.setProperty('--story-opacity', (0.68 + focusSoft * 0.32 - exit * 0.24 - (1 - enter) * 0.08).toFixed(4))
+      section.style.setProperty('--story-camera-y', ((-distance * 28) + velocity * -14).toFixed(2) + 'px')
+      section.style.setProperty('--story-camera-x', (Math.sin(index * 1.37) * distance * 6).toFixed(2) + 'px')
+      section.style.setProperty('--story-scale', (1 + focusSoft * 0.010 - exit * 0.038 - (1 - enter) * 0.014).toFixed(4))
+      section.style.setProperty('--story-opacity', (0.70 + focusSoft * 0.30 - exit * 0.20 - (1 - enter) * 0.06).toFixed(4))
 
       section.classList.toggle('story-active', focus > 0.16)
       section.classList.toggle('story-past', distance <= -0.54)
@@ -68,7 +68,7 @@ export function useStoryMotion() {
         enter,
         exit,
         travel,
-        velocity,
+        velocity: motionVelocity,
         direction,
         chapter,
       })
