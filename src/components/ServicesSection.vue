@@ -5,7 +5,7 @@ defineProps({
 </script>
 
 <template>
-  <section id="sluzby" class="services" data-motion-section>
+  <section id="sluzby" class="services" data-motion-section data-motion-sequence="ServicesRhythm">
     <div class="container" data-motion-preset="TrackCinematic">
       <div class="section-label" data-motion="fade" data-motion-preset="FadeMicro">CO NABÍZÍM</div>
       <h2 class="section-title" data-motion="slide-up" data-motion-preset="SplitWide">SLUŽBY</h2>
