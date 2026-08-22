@@ -50,20 +50,21 @@ const familyMap = {
 const resolveTransform = (preset, progress, velocity, direction) => {
   const v = variantMap[preset.variant] || variantMap.cinematic
   const f = familyMap[preset.family] || familyMap.fade
-  const phase = smooth(progress)
-  const travel = 1 - Math.abs(progress * 2 - 1)
+  const focusPhase = smooth(1 - Math.abs(progress * 2 - 1))
+  const travel = clamp(1 - Math.abs(progress * 2 - 1))
+  const edge = 1 - focusPhase
   const speed = Math.min(Math.abs(velocity), 1)
   const directionSign = direction || 1
 
   return {
-    x: f.x * v.distance * (1 - phase) * 80 + directionSign * speed * f.x * 18,
-    y: f.y * v.distance * (1 - phase) * 90 - directionSign * speed * f.y * 10,
-    z: f.z * v.distance * (1 - phase) * 90,
-    scale: 1 - (1 - phase) * (1 - v.scale),
-    rotate: f.rotate * (1 - phase) * 7 + directionSign * speed * f.rotate * 1.8,
-    blur: (1 - phase) * v.blur * 10 + speed * v.blur * 2.5,
+    x: f.x * v.distance * edge * 80 + directionSign * speed * f.x * 18,
+    y: f.y * v.distance * edge * 90 - directionSign * speed * f.y * 10,
+    z: f.z * v.distance * edge * 90,
+    scale: 1 - edge * (1 - v.scale),
+    rotate: f.rotate * edge * 7 + directionSign * speed * f.rotate * 1.8,
+    blur: edge * v.blur * 10 + speed * v.blur * 2.5,
     skew: f.x * directionSign * speed * (preset.family === 'skew' ? 5 : 1.5),
-    opacity: clamp(0.58 + phase * 0.42 + travel * 0.06),
+    opacity: clamp(0.58 + focusPhase * 0.42 + travel * 0.04),
   }
 }
 
