@@ -8,6 +8,7 @@ import './styles/motion.css'
 import './styles/about-story.css'
 import './styles/about-story-polish.css'
 import './styles/art-direction.css'
+import './styles/art-direction-refresh.css'
 import './styles/mobile.css'
 
 createApp(App).mount('#app')
