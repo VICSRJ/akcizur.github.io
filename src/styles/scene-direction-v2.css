@@ -1,0 +1,195 @@
+/* =========================================================
+   SCENE DIRECTION V2
+   Each chapter enters from a distinct cinematic vector.
+   Text receives a visible layered depth shadow without heavy blur.
+   ========================================================= */
+
+html.motion-ready .hero,
+html.motion-ready .about,
+html.motion-ready .services,
+html.motion-ready .portfolio,
+html.motion-ready .contact {
+  --scene-entry-x: 0px;
+  --scene-entry-y: 0px;
+  --scene-entry-z: 0px;
+  --scene-entry-r: 0deg;
+  --scene-parallax-x: 0px;
+  --scene-parallax-y: 0px;
+  transform-origin: 50% 50%;
+}
+
+/* 01 — HERO: comes forward from depth. */
+html.motion-ready .hero {
+  transform:
+    translate3d(
+      calc(var(--story-camera-x, 0px) + var(--story-distance, 0) * -8px),
+      calc(var(--story-camera-y, 0px) + var(--story-distance, 0) * 5px),
+      calc(var(--story-distance, 0) * -24px)
+    )
+    scale(calc(.982 + var(--story-focus, 0) * .018));
+}
+
+/* 02 — ABOUT: enters from right / settles left. */
+html.motion-ready .about {
+  transform:
+    translate3d(
+      calc(var(--story-distance, 0) * 34px),
+      calc(var(--story-distance, 0) * -7px),
+      calc(var(--story-distance, 0) * -8px)
+    )
+    rotate(calc(var(--story-distance, 0) * -.35deg));
+}
+
+/* 03 — SERVICES: enters laterally from left, like a title card on a track. */
+html.motion-ready .services {
+  transform:
+    translate3d(
+      calc(var(--story-distance, 0) * -46px),
+      calc(var(--story-distance, 0) * 4px),
+      calc(var(--story-distance, 0) * -4px)
+    )
+    skewX(calc(var(--story-distance, 0) * -.45deg));
+}
+
+/* 04 — PORTFOLIO: rises diagonally from lower depth. */
+html.motion-ready .portfolio {
+  transform:
+    translate3d(
+      calc(var(--story-distance, 0) * 18px),
+      calc(var(--story-distance, 0) * 54px),
+      calc(var(--story-distance, 0) * -18px)
+    )
+    rotate(calc(var(--story-distance, 0) * .28deg));
+}
+
+/* 05 — CONTACT: drops from above and resolves to stillness. */
+html.motion-ready .contact {
+  transform:
+    translate3d(
+      calc(var(--story-distance, 0) * -8px),
+      calc(var(--story-distance, 0) * -62px),
+      calc(var(--story-distance, 0) * -12px)
+    )
+    scale(calc(.99 + var(--story-focus, 0) * .01));
+}
+
+/* Keep layer geometry cheap and crisp. */
+html.motion-ready .hero,
+html.motion-ready .about,
+html.motion-ready .services,
+html.motion-ready .portfolio,
+html.motion-ready .contact {
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+/* =========================================================
+   VISIBLE TYPOGRAPHIC DEPTH
+   Three layers: contact / cast / directional edge.
+   ========================================================= */
+
+html.motion-ready .hero h1,
+html.motion-ready .hero-number,
+html.motion-ready .about .section-title,
+html.motion-ready .about-item h3,
+html.motion-ready .services .section-title,
+html.motion-ready .service-item h3,
+html.motion-ready .portfolio .section-title,
+html.motion-ready .portfolio-item h3,
+html.motion-ready .contact .section-title {
+  --shadow-z: var(--motion-z, 0px);
+  --shadow-focus: var(--story-focus, 0);
+  --shadow-speed: var(--story-velocity, 0);
+  --shadow-dir: var(--story-direction, 1);
+  --shadow-depth: clamp(1px, calc(abs(var(--shadow-z)) * .12 + 2px), 14px);
+  --shadow-soft: clamp(.7px, calc(abs(var(--shadow-z)) * .045 + 1px), 5px);
+  --shadow-alpha: clamp(.10, calc(.10 + abs(var(--shadow-z)) * .006 + var(--shadow-speed) * .08), .34);
+
+  text-shadow:
+    calc(var(--shadow-dir) * 0.8px) 1px 0 rgba(0,0,0,.14),
+    calc(var(--shadow-dir) * 1.5px) 3px var(--shadow-soft) rgba(0,0,0,calc(var(--shadow-alpha) * .42)),
+    calc(var(--shadow-dir) * 2.8px) var(--shadow-depth) calc(var(--shadow-soft) * 1.8) rgba(0,0,0,calc(var(--shadow-alpha) * .28));
+}
+
+/* Light sections: physical-looking black cast shadow. */
+html.motion-ready .about .section-title,
+html.motion-ready .about-item h3,
+html.motion-ready .portfolio .section-title,
+html.motion-ready .portfolio-item h3 {
+  text-shadow:
+    calc(var(--shadow-dir) * .7px) 1px 0 rgba(0,0,0,.17),
+    calc(var(--shadow-dir) * 1.8px) 4px var(--shadow-soft) rgba(0,0,0,calc(var(--shadow-alpha) * .55)),
+    calc(var(--shadow-dir) * 3.5px) var(--shadow-depth) calc(var(--shadow-soft) * 2) rgba(0,0,0,calc(var(--shadow-alpha) * .24));
+}
+
+/* Dark sections: a restrained light extrusion keeps white type dimensional. */
+html.motion-ready .hero h1,
+html.motion-ready .hero-number,
+html.motion-ready .services .section-title,
+html.motion-ready .service-item h3,
+html.motion-ready .contact .section-title {
+  text-shadow:
+    calc(var(--shadow-dir) * -.6px) -1px 0 rgba(255,255,255,.16),
+    calc(var(--shadow-dir) * -1.6px) -2px var(--shadow-soft) rgba(255,255,255,calc(var(--shadow-alpha) * .30)),
+    calc(var(--shadow-dir) * -3px) calc(var(--shadow-depth) * -.55) calc(var(--shadow-soft) * 1.5) rgba(255,255,255,calc(var(--shadow-alpha) * .16));
+}
+
+/* As focus locks, the far cast shadow collapses and typography becomes sharp. */
+html.motion-ready [data-motion-role="title"],
+html.motion-ready [data-motion-role="heading"],
+html.motion-ready .hero h1,
+html.motion-ready .hero-number {
+  text-shadow:
+    calc(var(--shadow-dir) * .6px) 1px 0 rgba(0,0,0,calc(.10 + (1 - var(--shadow-focus)) * .06)),
+    calc(var(--shadow-dir) * 1.4px) calc(2px + var(--shadow-depth) * (1 - var(--shadow-focus)))
+      calc(var(--shadow-soft) * (1 - var(--shadow-focus) * .4))
+      rgba(0,0,0,calc(var(--shadow-alpha) * (1 - var(--shadow-focus) * .35)));
+}
+
+@media (max-width: 700px) {
+  html.motion-ready .hero,
+  html.motion-ready .about,
+  html.motion-ready .services,
+  html.motion-ready .portfolio,
+  html.motion-ready .contact {
+    transform: translate3d(0, calc(var(--story-distance, 0) * 18px), 0) scale(calc(.995 + var(--story-focus, 0) * .005));
+    rotate: none;
+  }
+
+  html.motion-ready .hero h1,
+  html.motion-ready .hero-number,
+  html.motion-ready .about .section-title,
+  html.motion-ready .about-item h3,
+  html.motion-ready .services .section-title,
+  html.motion-ready .service-item h3,
+  html.motion-ready .portfolio .section-title,
+  html.motion-ready .portfolio-item h3,
+  html.motion-ready .contact .section-title {
+    text-shadow:
+      1px 1px 0 rgba(0,0,0,.12),
+      2px 3px 2px rgba(0,0,0,.16) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.motion-ready .hero,
+  html.motion-ready .about,
+  html.motion-ready .services,
+  html.motion-ready .portfolio,
+  html.motion-ready .contact {
+    transform: none !important;
+    rotate: none !important;
+  }
+
+  html.motion-ready .hero h1,
+  html.motion-ready .hero-number,
+  html.motion-ready .about .section-title,
+  html.motion-ready .about-item h3,
+  html.motion-ready .services .section-title,
+  html.motion-ready .service-item h3,
+  html.motion-ready .portfolio .section-title,
+  html.motion-ready .portfolio-item h3,
+  html.motion-ready .contact .section-title {
+    text-shadow: none !important;
+  }
+}
