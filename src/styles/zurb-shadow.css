@@ -1,0 +1,48 @@
+/* =========================================================
+   ZURB SHADOW LAYER
+   Modernized from the multi-shadow techniques demonstrated
+   in ZURB's CSS Shadow Experiments.
+   ========================================================= */
+
+html.remix-motion [data-motion-preset],
+html.remix-motion [data-motion],
+html.remix-motion [data-motion-role] {
+  --zurb-shadow-color: rgba(0, 0, 0, 0.18);
+  box-shadow: var(--remix-zurb-shadow, none);
+  text-shadow: var(--remix-zurb-text-shadow, none);
+}
+
+html.remix-motion .hero [data-motion-preset],
+html.remix-motion .services [data-motion-preset],
+html.remix-motion .contact [data-motion-preset],
+html.remix-motion .hero [data-motion],
+html.remix-motion .services [data-motion],
+html.remix-motion .contact [data-motion],
+html.remix-motion .hero [data-motion-role],
+html.remix-motion .services [data-motion-role],
+html.remix-motion .contact [data-motion-role] {
+  --zurb-shadow-color: rgba(255, 255, 255, 0.14);
+}
+
+html.remix-motion .btn,
+html.remix-motion .about-item,
+html.remix-motion .portfolio-item,
+html.remix-motion .service-item {
+  transition: box-shadow 180ms ease, transform 180ms ease, background-color 180ms ease;
+}
+
+html.remix-motion .btn:hover,
+html.remix-motion .about-item:hover,
+html.remix-motion .portfolio-item:hover,
+html.remix-motion .service-item:hover {
+  box-shadow: var(--remix-zurb-shadow-hover, var(--remix-zurb-shadow, none));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.remix-motion [data-motion-preset],
+  html.remix-motion [data-motion],
+  html.remix-motion [data-motion-role] {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+}
