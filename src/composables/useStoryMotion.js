@@ -10,7 +10,7 @@ const reducedMotion = () =>
 export function useStoryMotion() {
   let raf = 0
   let sections = []
-  let director = null
+  let directors = []
   let previousY = 0
   let previousTime = 0
   let velocity = 0
@@ -27,8 +27,7 @@ export function useStoryMotion() {
     previousY = scrollY
     previousTime = time
 
-    for (let index = 0; index < sections.length; index += 1) {
-      const section = sections[index]
+    sections.forEach((section, index) => {
       const rect = section.getBoundingClientRect()
       const center = rect.top + rect.height * 0.5
       const distance = clamp((center - viewport * 0.5) / viewport, -1.5, 1.5)
@@ -62,7 +61,7 @@ export function useStoryMotion() {
       section.classList.toggle('story-past', distance <= -0.54)
       section.classList.toggle('story-future', distance >= 0.54)
 
-      director?.render({
+      directors[index]?.render({
         progress,
         distance,
         focus: focusSoft,
@@ -73,7 +72,7 @@ export function useStoryMotion() {
         direction,
         chapter,
       })
-    }
+    })
   }
 
   const requestUpdate = () => {
@@ -87,7 +86,7 @@ export function useStoryMotion() {
 
     if (reducedMotion()) return
 
-    director = createMotionDirector({ root: document })
+    directors = sections.map((section) => createMotionDirector({ root: section }))
     update(previousTime)
     window.addEventListener('scroll', requestUpdate, { passive: true })
     window.addEventListener('resize', requestUpdate, { passive: true })
@@ -97,6 +96,6 @@ export function useStoryMotion() {
     window.removeEventListener('scroll', requestUpdate)
     window.removeEventListener('resize', requestUpdate)
     if (raf) cancelAnimationFrame(raf)
-    director = null
+    directors = []
   })
 }
