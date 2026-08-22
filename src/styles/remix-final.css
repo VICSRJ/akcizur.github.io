@@ -1,0 +1,95 @@
+/* =========================================================
+   REMIX FINAL / PHYSICAL 3D TYPE
+   Derived from the supplied multi-layer extrusion idea,
+   adapted to the scroll-driven Remix motion variables.
+   ========================================================= */
+
+html.remix-motion.motion-ready {
+  --remix-light-x: -0.72;
+  --remix-light-y: 1;
+}
+
+html.remix-motion.motion-ready [data-motion-role="title"],
+html.remix-motion.motion-ready [data-motion-role="heading"],
+html.remix-motion.motion-ready .section-title,
+html.remix-motion.motion-ready .hero h1,
+html.remix-motion.motion-ready .hero-number {
+  --depth: clamp(0, abs(var(--remix-z, 0px)) / 42px, 1);
+  --extrude: calc(1px + var(--depth) * 13px + var(--remix-energy, .5) * 2px);
+  --contact: calc(var(--extrude) * .22);
+  --cast-x: calc(var(--remix-shadow-x, 0px) + var(--remix-light-x) * var(--extrude));
+  --cast-y: calc(var(--remix-shadow-y, 0px) + var(--remix-light-y) * var(--extrude));
+  --cast-blur: clamp(0px, calc(var(--remix-shadow-blur, 0px) + var(--depth) * 7px), 10px);
+  --cast-alpha: clamp(.10, calc(.10 + var(--depth) * .16 + var(--remix-energy, .5) * .05), .30);
+  text-shadow:
+    calc(var(--contact) * -.35) calc(var(--contact) * -.35) 0 rgba(255,255,255,.18),
+    calc(var(--extrude) * .10) calc(var(--extrude) * .10) 0 rgba(0,0,0,.18),
+    calc(var(--extrude) * .20) calc(var(--extrude) * .20) 0 rgba(0,0,0,.22),
+    calc(var(--extrude) * .30) calc(var(--extrude) * .30) 0 rgba(0,0,0,.26),
+    calc(var(--extrude) * .40) calc(var(--extrude) * .40) 0 rgba(0,0,0,.30),
+    var(--cast-x) var(--cast-y) var(--cast-blur) rgba(0,0,0,var(--cast-alpha)),
+    calc(var(--cast-x) * 1.45) calc(var(--cast-y) * 1.55) calc(var(--cast-blur) * 2.1) rgba(0,0,0,calc(var(--cast-alpha) * .42));
+  text-rendering: geometricPrecision;
+}
+
+/* Dark scenes use restrained highlight separation and keep the cast shadow visible. */
+html.remix-motion.motion-ready .services [data-motion-role="title"],
+html.remix-motion.motion-ready .services [data-motion-role="heading"],
+html.remix-motion.motion-ready .contact .section-title,
+html.remix-motion.motion-ready .hero h1,
+html.remix-motion.motion-ready .hero-number {
+  text-shadow:
+    -1px -1px 0 rgba(255,255,255,.12),
+    calc(var(--extrude) * .12) calc(var(--extrude) * .12) 0 rgba(0,0,0,.18),
+    calc(var(--extrude) * .24) calc(var(--extrude) * .24) 0 rgba(0,0,0,.24),
+    calc(var(--extrude) * .36) calc(var(--extrude) * .36) 0 rgba(0,0,0,.30),
+    calc(var(--cast-x) * .85) calc(var(--cast-y) * .90) calc(var(--cast-blur) * .72) rgba(0,0,0,calc(var(--cast-alpha) * 1.2)),
+    calc(var(--cast-x) * 1.4) calc(var(--cast-y) * 1.5) calc(var(--cast-blur) * 1.8) rgba(0,0,0,calc(var(--cast-alpha) * .35));
+}
+
+/* Light scenes deliberately expose the shadow more strongly. */
+html.remix-motion.motion-ready .about [data-motion-role="title"],
+html.remix-motion.motion-ready .about [data-motion-role="heading"],
+html.remix-motion.motion-ready .portfolio [data-motion-role="title"],
+html.remix-motion.motion-ready .portfolio [data-motion-role="heading"] {
+  text-shadow:
+    -1px -1px 0 rgba(255,255,255,.85),
+    calc(var(--extrude) * .10) calc(var(--extrude) * .10) 0 rgba(0,0,0,.16),
+    calc(var(--extrude) * .22) calc(var(--extrude) * .22) 0 rgba(0,0,0,.22),
+    calc(var(--extrude) * .34) calc(var(--extrude) * .34) 0 rgba(0,0,0,.28),
+    var(--cast-x) var(--cast-y) var(--cast-blur) rgba(0,0,0,var(--cast-alpha)),
+    calc(var(--cast-x) * 1.35) calc(var(--cast-y) * 1.45) calc(var(--cast-blur) * 2) rgba(0,0,0,calc(var(--cast-alpha) * .34));
+}
+
+/* Performance guard: large text uses shadows only; never CSS filter blur. */
+html.remix-motion.motion-ready [data-motion-role="title"],
+html.remix-motion.motion-ready [data-motion-role="heading"],
+html.remix-motion.motion-ready .section-title,
+html.remix-motion.motion-ready .hero h1,
+html.remix-motion.motion-ready .hero-number {
+  filter: none !important;
+  will-change: transform, opacity;
+}
+
+@media (max-width: 700px) {
+  html.remix-motion.motion-ready [data-motion-role="title"],
+  html.remix-motion.motion-ready [data-motion-role="heading"],
+  html.remix-motion.motion-ready .section-title,
+  html.remix-motion.motion-ready .hero h1,
+  html.remix-motion.motion-ready .hero-number {
+    --extrude: calc(1px + var(--depth) * 6px);
+    --cast-blur: clamp(0px, calc(var(--remix-shadow-blur,0px) + var(--depth) * 3px), 4px);
+    --cast-alpha: clamp(.08, calc(.08 + var(--depth) * .10), .18);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.remix-motion.motion-ready [data-motion-role="title"],
+  html.remix-motion.motion-ready [data-motion-role="heading"],
+  html.remix-motion.motion-ready .section-title,
+  html.remix-motion.motion-ready .hero h1,
+  html.remix-motion.motion-ready .hero-number {
+    text-shadow: none !important;
+    filter: none !important;
+  }
+}
