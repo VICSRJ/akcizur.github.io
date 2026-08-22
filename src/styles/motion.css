@@ -1,65 +1,129 @@
 /* =========================================================
-   MOTION DIRECTOR OUTPUT — PERFORMANCE
-   Scroll-driven motion is frame-synchronous: no transition lag.
-   Blur stays opt-in and only on compact elements.
+   MOTION DIRECTOR OUTPUT — ELEMENT CHOREOGRAPHY
+   Atomic transforms first. Role-specific micro motion second.
    ========================================================= */
 
-:root {
-  --motion-ease: cubic-bezier(.16, 1, .3, 1);
-}
+:root { --motion-ease: cubic-bezier(.16,1,.3,1); }
 
 html.motion-ready [data-motion-preset] {
   opacity: var(--motion-opacity, 1) !important;
   transform:
-    translate3d(var(--motion-x, 0px), var(--motion-y, 0px), var(--motion-z, 0px))
-    scale(var(--motion-scale, 1))
-    rotate(var(--motion-rotate, 0deg))
-    skewX(var(--motion-skew, 0deg)) !important;
+    translate3d(var(--motion-x,0px),var(--motion-y,0px),var(--motion-z,0px))
+    scale(var(--motion-scale,1))
+    rotate(var(--motion-rotate,0deg))
+    skewX(var(--motion-skew,0deg)) !important;
   transition: none !important;
   transform-origin: center center;
   backface-visibility: hidden;
+  will-change: transform, opacity;
 }
 
-/* Blur is reserved for compact surfaces explicitly marked safe. */
-html.motion-ready [data-motion-preset][data-motion-blur-safe] {
-  filter: blur(var(--motion-blur, 0px));
-}
-
-/* Large typography, media, and scene shells never receive filter blur. */
-html.motion-ready .story-scene [data-motion-preset].motion-no-blur,
-html.motion-ready .story-scene .section-title,
-html.motion-ready .story-scene .hero h1,
-html.motion-ready .story-scene .hero-number,
-html.motion-ready .story-scene .hero p,
-html.motion-ready .story-scene .contact .section-title,
+html.motion-ready [data-motion-preset][data-motion-blur-safe] { filter: blur(var(--motion-blur,0px)); }
+html.motion-ready [data-motion-preset].motion-no-blur,
 html.motion-ready .story-scene > section[data-motion-section],
-html.motion-ready .story-scene [data-motion-preset] img,
-html.motion-ready .story-scene [data-motion-preset] video {
-  filter: none !important;
+html.motion-ready .section-title,
+html.motion-ready .hero h1,
+html.motion-ready .hero-number { filter: none !important; }
+
+/* Element roles — each has a distinct cinematic response layered over the preset. */
+html.motion-ready [data-motion-role="title"] {
+  transform-origin: 0 52%;
+  letter-spacing: calc(var(--base-letter-spacing, 0px) - var(--sequence-energy,0) * .008em) !important;
 }
 
-html.motion-ready [data-motion-preset][data-motion-preset*="Clip"],
-html.motion-ready [data-motion-preset][data-motion-preset*="Mask"],
-html.motion-ready [data-motion-preset][data-motion-preset*="Curtain"] {
-  clip-path: inset(calc((1 - var(--story-focus, 1)) * 100%) 0 0 0);
+html.motion-ready [data-motion-role="copy"] {
+  opacity: calc(var(--motion-opacity,1) * (.78 + var(--sequence-energy,0) * .22)) !important;
 }
 
-html.motion-ready .story-scene [data-motion-preset] {
-  perspective: 1400px;
+html.motion-ready [data-motion-role="icon"] {
+  transform-origin: 50% 50%;
 }
 
-@media (max-width: 700px) {
-  html.motion-ready [data-motion-preset][data-motion-blur-safe] {
-    filter: none;
-  }
+html.motion-ready [data-motion-role="icon"] img { transition: transform 280ms var(--motion-ease); }
+html.motion-ready [data-motion-role="icon"]:hover img { transform: rotate(6deg) scale(1.08); }
+
+html.motion-ready [data-motion-role="index"] {
+  opacity: calc(.22 + var(--sequence-energy,0) * .18) !important;
+}
+
+html.motion-ready [data-motion-role="surface"] {
+  transform-origin: 50% 50%;
+}
+
+html.motion-ready [data-motion-role="content"] { transform-origin: 50% 65%; }
+
+html.motion-ready [data-motion-role="heading"] {
+  transform-origin: 0 100%;
+}
+
+html.motion-ready [data-motion-role="body"],
+html.motion-ready [data-motion-role="meta"] {
+  opacity: calc(.60 + var(--sequence-energy,0) * .40) !important;
+}
+
+html.motion-ready [data-motion-role="rule"] {
+  transform-origin: 0 50%;
+  opacity: calc(.12 + var(--sequence-energy,0) * .38) !important;
+}
+
+html.motion-ready [data-motion-role="cta"] {
+  transform-origin: 50% 50%;
+}
+
+/* Sequence-aware stagger. Uses the element index without JS timers. */
+html.motion-ready [data-motion-id] {
+  --element-phase: calc((var(--motion-index,0) * .03125) + var(--sequence-phase,0));
+}
+
+/* Menu / navigation micro choreography. */
+html.motion-ready [data-motion-nav] .logo,
+html.motion-ready [data-motion-nav] .menu-toggle,
+html.motion-ready [data-motion-nav] .nav-links a {
+  will-change: transform, opacity;
+}
+
+html.motion-ready [data-motion-nav] .nav-links a {
+  transition: transform 320ms var(--motion-ease), opacity 320ms ease;
+}
+
+html.motion-ready [data-motion-nav] .nav-links a:hover {
+  transform: translateX(8px);
+}
+
+/* Fine-grain structural rules. */
+.about-rule,
+.service-rule,
+.portfolio-rule,
+.contact-rule,
+.hero-scroll-line {
+  display: block;
+  height: 1px;
+  width: 100%;
+  transform-origin: left center;
+  transform: scaleX(calc(.18 + var(--sequence-energy,0) * .82));
+  opacity: calc(.14 + var(--sequence-energy,0) * .36);
+  will-change: transform, opacity;
+}
+
+.hero-scroll-line {
+  width: clamp(3rem, 12vw, 8rem);
+  margin-top: 3rem;
+  transform-origin: left center;
+}
+
+@media (max-width:700px) {
+  html.motion-ready [data-motion-role="icon"]:hover img { transform: none; }
+  html.motion-ready [data-motion-preset][data-motion-blur-safe] { filter:none !important; }
+  .hero-scroll-line { margin-top: 2rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html.motion-ready [data-motion-preset] {
-    opacity: 1 !important;
-    transform: none !important;
-    filter: none !important;
-    clip-path: none !important;
-    transition: none !important;
+  html.motion-ready [data-motion-preset],
+  html.motion-ready [data-motion-role="title"],
+  html.motion-ready [data-motion-role="copy"],
+  html.motion-ready [data-motion-role="rule"] {
+    transform:none !important;
+    filter:none !important;
+    transition:none !important;
   }
 }
