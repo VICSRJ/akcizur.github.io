@@ -1,7 +1,6 @@
 /* =========================================================
-   REMIX MOTION v3
-   One render surface for scene + element + shadow.
-   Loaded last so legacy motion layers become inputs, not writers.
+   REMIX MOTION v4
+   Single render surface for scene + element + physical shadow.
    ========================================================= */
 
 html.motion-ready [data-motion-section] {
@@ -13,7 +12,6 @@ html.motion-ready [data-motion-section] {
   opacity: var(--remix-scene-opacity,1) !important;
   filter: none !important;
   transition: none !important;
-  will-change: transform, opacity;
   transform-style: preserve-3d;
   backface-visibility: hidden;
 }
@@ -28,12 +26,11 @@ html.motion-ready [data-motion-section] [data-motion-role] {
   opacity: var(--remix-opacity,var(--motion-opacity,1)) !important;
   filter: none !important;
   transition: none !important;
-  will-change: transform, opacity;
   transform-style: preserve-3d;
   backface-visibility: hidden;
 }
 
-/* Visible physical text depth. JS computes numeric values from z-depth + layer + velocity. */
+/* Physical depth bands: contact + cast + far shadow. */
 html.motion-ready [data-motion-role="title"],
 html.motion-ready [data-motion-role="heading"],
 html.motion-ready [data-motion-role="index"],
@@ -42,58 +39,68 @@ html.motion-ready .section-title,
 html.motion-ready .hero h1,
 html.motion-ready .hero-number {
   text-shadow:
+    calc(var(--remix-shadow-x,0px) * .30)
+    calc(var(--remix-shadow-y,0px) * .30)
+    0
+    rgba(0,0,0,.24),
+    calc(var(--remix-shadow-x,0px) * .70)
+    calc(var(--remix-shadow-y,0px) * .70)
+    calc(var(--remix-shadow-blur,0px) * .42)
+    rgba(0,0,0,calc(var(--remix-shadow-alpha,0) * .82)),
     var(--remix-shadow-x,0px)
     var(--remix-shadow-y,0px)
     var(--remix-shadow-blur,0px)
-    rgba(0,0,0,var(--remix-shadow-alpha,0));
+    rgba(0,0,0,var(--remix-shadow-alpha,0)) !important;
 }
 
-/* Large text gets crisp shadow rather than blur filters. */
-html.motion-ready .hero h1,
-html.motion-ready .section-title,
-html.motion-ready .hero-number {
-  filter: none !important;
-}
-
-/* Dark scenes keep the cast shadow visible against black without using a white glow. */
+/* Dark sections still get a visible physical separation, never a diffuse white glow. */
 html.motion-ready .services [data-motion-role="title"],
 html.motion-ready .services [data-motion-role="heading"],
 html.motion-ready .contact [data-motion-role="title"],
-html.motion-ready .contact .section-title {
+html.motion-ready .contact .section-title,
+html.motion-ready .hero h1,
+html.motion-ready .hero-number {
   text-shadow:
+    calc(var(--remix-shadow-x,0px) * .35)
+    calc(var(--remix-shadow-y,0px) * .35)
+    0
+    rgba(255,255,255,.10),
+    calc(var(--remix-shadow-x,0px) * .75)
+    calc(var(--remix-shadow-y,0px) * .75)
+    calc(var(--remix-shadow-blur,0px) * .38)
+    rgba(255,255,255,calc(var(--remix-shadow-alpha,0) * .32)),
     var(--remix-shadow-x,0px)
     var(--remix-shadow-y,0px)
-    var(--remix-shadow-blur,0px)
-    rgba(0,0,0,calc(var(--remix-shadow-alpha,0) * 1.35));
+    calc(var(--remix-shadow-blur,0px) * .72)
+    rgba(255,255,255,calc(var(--remix-shadow-alpha,0) * .18)) !important;
 }
 
-/* Card/content shadow is intentionally subtle. */
-html.motion-ready [data-motion-role="content"],
-html.motion-ready [data-motion-role="copy"],
-html.motion-ready [data-motion-role="body"],
-html.motion-ready [data-motion-role="meta"] {
-  text-shadow:
-    calc(var(--remix-shadow-x,0px) * .55)
-    calc(var(--remix-shadow-y,0px) * .55)
-    calc(var(--remix-shadow-blur,0px) * .55)
-    rgba(0,0,0,calc(var(--remix-shadow-alpha,0) * .72));
-}
+/* Depth bands based on compositor z-layer. */
+html.motion-ready [data-motion-section] [data-motion-role="surface"],
+html.motion-ready [data-motion-section] [data-motion-role="depth"] { z-index: 1; }
+html.motion-ready [data-motion-section] [data-motion-role="content"],
+html.motion-ready [data-motion-section] [data-motion-role="body"],
+html.motion-ready [data-motion-section] [data-motion-role="meta"] { z-index: 3; }
+html.motion-ready [data-motion-section] [data-motion-role="title"],
+html.motion-ready [data-motion-section] [data-motion-role="heading"],
+html.motion-ready [data-motion-section] [data-motion-role="cta"] { z-index: 5; }
 
-/* Layered directional entry: each scene is intentionally different. */
+html.motion-ready [data-motion-role="title"],
+html.motion-ready [data-motion-role="heading"] { transform-origin: 0 50%; }
+html.motion-ready [data-motion-role="icon"] { transform-origin: 50% 50%; }
+html.motion-ready [data-motion-role="rule"] { transform-origin: left center; }
+
 html.motion-ready [data-motion-section][data-remix-scene="OpeningFilm"] { transform-origin: 50% 55%; }
 html.motion-ready [data-motion-section][data-remix-scene="EditorialCurtain"] { transform-origin: 88% 50%; }
 html.motion-ready [data-motion-section][data-remix-scene="ServicesRhythm"] { transform-origin: 12% 50%; }
 html.motion-ready [data-motion-section][data-remix-scene="PortfolioSweep"] { transform-origin: 52% 86%; }
 html.motion-ready [data-motion-section][data-remix-scene="ContactClimax"] { transform-origin: 50% 15%; }
 
-/* Never let old blur layers return on large surfaces. */
 html.motion-ready [data-motion-section],
 html.motion-ready [data-motion-section] .container,
 html.motion-ready [data-motion-section] .section-title,
 html.motion-ready [data-motion-section] .hero h1,
-html.motion-ready [data-motion-section] .hero-number {
-  filter: none !important;
-}
+html.motion-ready [data-motion-section] .hero-number { filter: none !important; }
 
 @media (max-width:700px) {
   html.motion-ready [data-motion-section] {
@@ -120,10 +127,13 @@ html.motion-ready [data-motion-section] .hero-number {
   html.motion-ready .hero h1,
   html.motion-ready .hero-number {
     text-shadow:
-      calc(var(--remix-shadow-x,0px) * .60)
-      calc(var(--remix-shadow-y,0px) * .60)
-      calc(var(--remix-shadow-blur,0px) * .55)
-      rgba(0,0,0,calc(var(--remix-shadow-alpha,0) * .72));
+      calc(var(--remix-shadow-x,0px) * .55)
+      calc(var(--remix-shadow-y,0px) * .55)
+      0 rgba(0,0,0,.18),
+      var(--remix-shadow-x,0px)
+      var(--remix-shadow-y,0px)
+      calc(var(--remix-shadow-blur,0px) * .56)
+      rgba(0,0,0,calc(var(--remix-shadow-alpha,0) * .76)) !important;
   }
 }
 
